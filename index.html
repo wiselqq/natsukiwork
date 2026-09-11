@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+            
+            /* Deep black background with green tech grid mesh pattern */
+            background-image: 
+                radial-gradient(circle, transparent 20%, #000000 20%, #000000 80%, transparent 80%, transparent),
+                radial-gradient(circle, transparent 20%, #000000 20%, #000000 80%, transparent 80%, transparent),
+                linear-gradient(#051a05 2px, transparent 2px),
+                linear-gradient(90deg, #051a05 2px, transparent 2px);
+            background-size: 30px 30px, 30px 30px, 30px 30px, 30px 30px;
+            background-position: 0 0, 15px 15px, 0 0, 0 0;
+        }
+
+        /* Top Bar Metadata matching reference image */
+        .top-bar {
+            width: 100%;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: flex-start;
+            font-size: 13px;
+            color: #00ff66;
+            letter-spacing: 1px;
+            box-sizing: border-box;
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+        }
+
+        /* Centered Menu Content Area */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+            transform: translateY(-20px);
+        }
+
+        /* Centered Character Avatar with Green/Orange Glow */
+        .avatar {
+            width: 160px;
+            height: auto;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.3)) drop-shadow(0 0 10px rgba(255, 111, 0, 0.3)); 
+        }
+
+        /* Title text structure matching 'natsuki natsuki' */
+        .title {
+            font-size: 40px;
+            font-weight: 300;
+            letter-spacing: 14px;
+            margin: 0;
+            color: #00ff66;
+            text-transform: lowercase;
+            padding-left: 14px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+        }
+
+        /* Second word highlight in orange */
+        .title span {
+            color: #ff6f00;
+            text-shadow: 0 0 10px rgba(255, 111, 0, 0.3);
+        }
+
+        /* Subtitle caption matching reference image */
+        .subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            margin-top: 15px;
+            letter-spacing: 2px;
+        }
+
+        /* Bottom Floating Bar Layout */
+        .footer-bar {
+            width: 100%;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* Left Green Square Home Button */
+        .home-btn {
+            background-color: #00ff66;
+            border: none;
+            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 255, 102, 0.3);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .home-btn:hover {
+            background-color: #00cc52;
+            transform: scale(1.05);
+        }
+
+        .home-btn svg {
+            fill: #000000;
+            width: 22px;
+            height: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Action Buttons with green & orange accent borders */
+        .action-link-green {
+            background-color: rgba(0, 255, 102, 0.03);
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            color: #00ff66;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .action-link-green:hover {
+            background-color: rgba(0, 255, 102, 0.1);
+            border-color: rgba(0, 255, 102, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+        }
+
+        .action-link-orange {
+            background-color: rgba(255, 111, 0, 0.03);
+            border: 1px solid rgba(255, 111, 0, 0.2);
+            color: #ff6f00;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s ease;
+        }
+
+        .action-link-orange:hover {
+            background-color: rgba(255, 111, 0, 0.1);
+            border-color: rgba(255, 111, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 111, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top bar system tracker -->
+    <div class="top-bar">
+        <div>#0.0.0.0 // LOCKED</div>
+    </div>
+
+    <!-- Centered Visual Cluster -->
+    <div class="main-content">
+        <!-- Character Avatar Render linked to the high-res official webp asset -->
+        <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
+        
+        <!-- Text Header Group -->
+        <h1 class="title">natsuki <span>natsuki</span></h1>
+        <div class="subtitle">v2 is releasing yesterday</div>
+    </div>
+
+    <!-- Bottom Actions Toolbar -->
+    <div class="footer-bar">
+        <!-- Left Green Home Button -->
+        <button class="home-btn" onclick="location.reload();">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+
+        <!-- Right Menu Links (Green & Orange Accents) -->
+        <div class="nav-links">
+            <a href="#" class="action-link-green">premium</a>
+            <a href="#" class="action-link-orange">discord</a>
+        </div>
+    </div>
+
+</body>
+</html>
