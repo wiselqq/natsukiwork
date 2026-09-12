@@ -25,12 +25,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
     }
 
     .top-bar {
-      position: absolute;
-      top: 20px;
       width: 90%;
       max-width: 600px;
       display: flex;
@@ -38,25 +36,24 @@
       font-size: 12px;
       letter-spacing: 2px;
       color: var(--accent);
+      padding-top: 20px;
     }
 
     .display-container {
-      position: relative;
       padding: 20px;
       border: 1px dashed var(--border);
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.9);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 15px;
+      margin: auto 0;
     }
 
-    /* Fixed character image styling */
     .character-img {
-      width: 180px;
+      width: 160px;
       height: auto;
       object-fit: contain;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
     }
 
     .label-text {
@@ -65,20 +62,19 @@
       color: var(--accent);
     }
 
-    /* Clean, non-AI settings menu style */
+    /* Clean fixed-bottom terminal config bar */
     .settings-menu {
-      position: fixed;
-      bottom: 20px;
+      width: 100%;
       background: #0d0d0f;
-      border: 1px solid var(--border);
+      border-top: 1px solid var(--border);
       color: #c0c0d0;
       font-family: 'Courier New', Courier, monospace;
-      padding: 16px 24px;
-      box-shadow: none;
-      border-radius: 0px;
+      padding: 16px 20px;
       display: flex;
+      justify-content: center;
       gap: 15px;
       align-items: center;
+      box-sizing: border-box;
     }
 
     .settings-menu h2 {
@@ -86,7 +82,6 @@
       letter-spacing: 2px;
       color: var(--accent);
       margin: 0;
-      border-bottom: none;
     }
 
     .settings-menu button {
@@ -115,8 +110,8 @@
   </div>
 
   <div class="display-container">
-    <!-- Updated with character graphic asset -->
-    <img src="18915.webp" alt="Character Graphic" class="character-img">
+    <!-- Make sure the image filename matches exactly in your GitHub repo folder -->
+    <img src="18915.webp" alt="Emilia Graphic" class="character-img">
     <div class="label-text">F R O S T</div>
   </div>
 
