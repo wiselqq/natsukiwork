@@ -8,9 +8,10 @@
         :root {
             --primary: #00ff66;
             --secondary: #ff6f00;
-            --bg-glow: rgba(0, 255, 102, 0.15);
+            --bg-glow: rgba(0, 255, 102, 0.3);
             --card-bg: rgba(5, 10, 5, 0.85);
             --border-color: rgba(0, 255, 102, 0.3);
+            --text-color: #ffffff;
         }
 
         * {
@@ -22,7 +23,7 @@
             margin: 0;
             padding: 0;
             background-color: #030503;
-            color: #ffffff;
+            color: var(--text-color);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
@@ -31,7 +32,7 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            transition: background 0.5s ease;
+            transition: background 0.5s ease, color 0.4s ease;
         }
 
         #space-canvas {
@@ -142,10 +143,10 @@
         }
 
         .subtitle {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--primary);
             margin-top: 15px;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             text-shadow: 0 0 10px var(--bg-glow);
             transition: color 0.4s ease;
@@ -369,6 +370,7 @@
             transform: scale(0.95);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             backdrop-filter: blur(16px);
+            color: #ffffff;
         }
 
         .modal-overlay.active .modal-content {
@@ -627,8 +629,8 @@
         <div class="avatar-container">
             <img id="active-avatar" class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Character Render">
         </div>
-        <h1 class="title"><span id="title-part1">subaru</span> <span id="title-part2">hub</span></h1>
-        <div id="active-subtitle" class="subtitle">spacetime curvature interface</div>
+        <h1 class="title"><span id="title-part1"></span><span id="title-part2"></span></h1>
+        <div id="active-subtitle" class="subtitle">core</div>
     </div>
 
     <!-- GAMES VIEW -->
@@ -744,6 +746,7 @@
             </div>
 
             <div class="modal-footer-actions">
+                <button class="btn-cancel" onclick="resetAllSettings()">Reset All</button>
                 <button class="btn-apply" onclick="applyChanges()">Apply Changes</button>
                 <button class="btn-cancel" onclick="toggleModal(false)">Cancel</button>
             </div>
@@ -753,48 +756,56 @@
     <script>
         const characters = {
             subaru: {
-                namePart1: "subaru",
-                namePart2: "hub",
-                subtitle: "spacetime curvature interface",
+                namePart1: "",
+                namePart2: "",
+                subtitle: "core",
                 avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
                 primary: "#00ff66",
                 secondary: "#ff6f00",
-                glow: "rgba(0, 255, 102, 0.15)",
+                glow: "rgba(0, 255, 102, 0.3)",
                 cardBg: "rgba(5, 10, 5, 0.85)",
-                border: "rgba(0, 255, 102, 0.3)"
+                border: "rgba(0, 255, 102, 0.3)",
+                bg: "#030503",
+                textColor: "#ffffff"
             },
             reinhard: {
-                namePart1: "reinhard",
-                namePart2: "astrea",
-                subtitle: "sword saint interface",
+                namePart1: "",
+                namePart2: "",
+                subtitle: "sword",
                 avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
                 primary: "#ffd700",
                 secondary: "#00bfff",
                 glow: "rgba(255, 215, 0, 0.2)",
                 cardBg: "rgba(10, 10, 5, 0.85)",
-                border: "rgba(255, 215, 0, 0.3)"
+                border: "rgba(255, 215, 0, 0.3)",
+                bg: "#030503",
+                textColor: "#ffffff"
             },
             emilia: {
-                namePart1: "emilia",
-                namePart2: "spirit",
-                subtitle: "half-elf frost interface",
-                avatar: "https://www.pngfind.com/mpng/TRxhTxw_emilia-re-zero-characters-hd-png-download/",
-                primary: "#00ffff",
-                secondary: "#dda0dd",
-                glow: "rgba(0, 255, 255, 0.2)",
-                cardBg: "rgba(5, 10, 15, 0.85)",
-                border: "rgba(0, 255, 255, 0.3)"
+                namePart1: "",
+                namePart2: "",
+                subtitle: "frost",
+                avatar: "https://i.ibb.co/18915.webp" /* using user-provided emilia image reference */,
+                primary: "#8a2be2",
+                secondary: "#9932cc",
+                glow: "rgba(138, 43, 226, 0.3)",
+                cardBg: "rgba(240, 240, 245, 0.9)",
+                border: "rgba(138, 43, 226, 0.3)",
+                bg: "#ffffff",
+                textColor: "#111111"
             },
             satella: {
-                namePart1: "satella",
-                namePart2: "witch",
-                subtitle: "envy shadow interface",
+                namePart1: "",
+                namePart2: "",
+                subtitle: "envy",
                 avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
                 primary: "#9932cc",
                 secondary: "#4b0082",
                 glow: "rgba(153, 50, 204, 0.25)",
                 cardBg: "rgba(10, 3, 15, 0.9)",
-                border: "rgba(153, 50, 204, 0.4)"
+                border: "rgba(153, 50, 204, 0.4)",
+                bg: "#030503",
+                textColor: "#ffffff"
             }
         };
 
@@ -878,12 +889,16 @@
                 document.getElementById('active-subtitle').innerText = char.subtitle;
                 document.getElementById('active-avatar').src = char.avatar;
 
+                document.body.style.backgroundColor = char.bg;
+                document.body.style.color = char.textColor;
+
                 const root = document.documentElement;
                 root.style.setProperty('--primary', char.primary);
                 root.style.setProperty('--secondary', char.secondary);
                 root.style.setProperty('--bg-glow', char.glow);
                 root.style.setProperty('--card-bg', char.cardBg);
                 root.style.setProperty('--border-color', char.border);
+                root.style.setProperty('--text-color', char.textColor);
 
                 currentThemeColor = char.primary;
             }
@@ -892,6 +907,34 @@
             avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
 
             toggleModal(false);
+        }
+
+        function resetAllSettings() {
+            stagedTheme = 'subaru';
+            stagedSpacing = 45;
+            stagedGravity = true;
+            stagedFloat = true;
+
+            document.getElementById('modal-slider').value = stagedSpacing;
+            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
+
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('subaru')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.classList.add('active');
+            gravBtn.innerText = 'Grid Warp: ON';
+
+            const floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.classList.add('active');
+            floatBtn.innerText = 'Avatar Float: ON';
+
+            applyChanges();
         }
 
         function toggleModal(open) {
@@ -985,9 +1028,9 @@
                             y -= Math.sin(angle) * force * 25;
                         }
 
-                        ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.2);
+                        ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.25);
                     } else {
-                        ctx.fillStyle = hexToRgba(currentThemeColor, 0.2);
+                        ctx.fillStyle = hexToRgba(currentThemeColor, 0.25);
                     }
 
                     ctx.fillRect(x - 1, y - 1, 2, 2);
