@@ -55,24 +55,26 @@
             box-shadow: 0 0 8px #00ff66;
         }
 
-        .main-content {
-            display: flex;
+        .view-section {
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             flex-grow: 1;
             text-align: center;
-            transform: translateY(-10px);
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
         }
 
-        .avatar-container {
-            position: relative;
-            margin-bottom: 20px;
+        .view-section.active {
+            display: flex;
         }
 
         .avatar {
             width: 130px;
             height: auto;
+            margin-bottom: 20px;
             filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.25)) drop-shadow(0 0 10px rgba(255, 111, 0, 0.25)); 
         }
 
@@ -98,6 +100,36 @@
             margin-top: 12px;
             letter-spacing: 2.5px;
             text-transform: uppercase;
+        }
+
+        /* Section Header & Working Searchbar styles */
+        .section-title {
+            font-size: 24px;
+            letter-spacing: 6px;
+            color: #00ff66;
+            text-transform: lowercase;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            padding: 12px 18px;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 13px;
+            letter-spacing: 1px;
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .search-box:focus {
+            border-color: #00ff66;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
         }
 
         .footer-bar {
@@ -133,7 +165,6 @@
             width: 20px;
             height: 20px;
             filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.4));
-            transition: fill 0.2s;
         }
 
         .dropdown-menu {
@@ -180,7 +211,6 @@
             height: 18px;
         }
 
-        /* Green Theme Icons */
         .icon-link.green {
             color: #00ff66;
         }
@@ -194,7 +224,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
         }
 
-        /* Orange Theme Icons */
         .icon-link.orange {
             color: #ff6f00;
         }
@@ -219,44 +248,86 @@
         <div id="live-clock">00:00:00</div>
     </div>
 
-    <div class="main-content">
-        <div class="avatar-container">
-            <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
-        </div>
-        
+    <!-- HOME VIEW -->
+    <div id="view-home" class="view-section active">
+        <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
         <h1 class="title">subaru <span>hub</span></h1>
         <div class="subtitle">terminal access interface</div>
+    </div>
+
+    <!-- GAMES VIEW -->
+    <div id="view-games" class="view-section">
+        <div class="section-title">games</div>
+        <input type="text" class="search-box" placeholder="search games..." onkeyup="filterItems(this)">
+    </div>
+
+    <!-- APPS VIEW -->
+    <div id="view-apps" class="view-section">
+        <div class="section-title">apps</div>
+        <input type="text" class="search-box" placeholder="search apps..." onkeyup="filterItems(this)">
+    </div>
+
+    <!-- BROWSER VIEW -->
+    <div id="view-browser" class="view-section">
+        <div class="section-title">browser</div>
+        <input type="text" class="search-box" placeholder="enter url or search..." onkeypress="handleBrowserSearch(event)">
     </div>
 
     <div class="footer-bar">
         <div class="menu-container">
             <button class="menu-btn">
-                <!-- Home Icon Default -->
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             </button>
             <div class="dropdown-menu">
                 <!-- Home -->
-                <a href="#" class="icon-link green" title="Home">
+                <button class="icon-link green" title="Home" onclick="switchView('home')">
                     <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                </a>
+                </button>
                 <!-- Games -->
-                <a href="#" class="icon-link orange" title="Games">
+                <button class="icon-link orange" title="Games" onclick="switchView('games')">
                     <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-4c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                </a>
-                <!-- Apps / Tools -->
-                <a href="#" class="icon-link green" title="Apps">
-                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-                </a>
-                <!-- Browser / External Link -->
-                <a href="#" class="icon-link orange" title="Browser">
+                </button>
+                <!-- Apps -->
+                <button class="icon-link green" title="Apps" onclick="switchView('apps')">
+                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                </button>
+                <!-- Browser -->
+                <button class="icon-link orange" title="Browser" onclick="switchView('browser')">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                </a>
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // Real-time clean clock for the top bar
+        // Switch views cleanly without reloading the page
+        function switchView(viewName) {
+            const sections = document.querySelectorAll('.view-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            
+            const target = document.getElementById('view-' + viewName);
+            if (target) {
+                target.classList.add('active');
+            }
+        }
+
+        // Placeholder filter logic for future games/apps elements
+        function filterItems(input) {
+            const query = input.value.toLowerCase();
+            // Ready for your custom elements insertion
+        }
+
+        // Quick browser search input behavior
+        function handleBrowserSearch(event) {
+            if (event.key === 'Enter') {
+                const query = event.target.value;
+                if(query) {
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+                }
+            }
+        }
+
+        // Clock logic
         function updateClock() {
             const now = new Date();
             document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
