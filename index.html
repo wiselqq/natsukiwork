@@ -3,319 +3,1349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Background & Character Display</title>
+    <title>Subaru Hub // Core</title>
     <style>
+        :root {
+            --primary: #00ff66;
+            --secondary: #ff6f00;
+            --bg-glow: rgba(0, 255, 102, 0.3);
+            --card-bg: rgba(5, 10, 5, 0.85);
+            --border-color: rgba(0, 255, 102, 0.3);
+            --text-color: #ffffff;
+        }
+
         * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #000000;
+            background-color: #030503;
+            color: var(--text-color);
             font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.5s ease, color 0.4s ease;
         }
-        canvas {
-            display: block;
-            position: fixed;
+
+        #space-canvas {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: 1;
-        }
-        .ui-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-            display: flex;
-            gap: 10px;
-            background: rgba(10, 10, 10, 0.85);
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-        }
-        select {
-            background: #050505;
-            color: #ff3333;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            padding: 8px 14px;
-            border-radius: 2px;
-            font-size: 14px;
-            font-family: 'Courier New', Courier, monospace;
-            outline: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        select:hover {
-            border-color: #ff3333;
-            box-shadow: 0 0 8px rgba(255, 0, 0, 0.2);
-        }
-        .system-status {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            color: rgba(255, 0, 0, 0.7);
-            font-size: 12px;
-            letter-spacing: 2px;
             pointer-events: none;
-            z-index: 5;
         }
 
-        /* Center Character / Word Container */
-        .content-display {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
+        .top-bar, .view-section, .footer-bar, .modal-overlay {
+            position: relative;
+            z-index: 2;
+        }
+
+        .top-bar {
+            width: 100%;
+            padding: 25px 40px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--primary);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--bg-glow);
+            transition: color 0.4s ease;
+        }
+
+        .top-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulse 2s infinite ease-in-out;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px var(--primary); }
+        }
+
+        .view-section {
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            pointer-events: none;
-            gap: 20px;
+            flex-grow: 1;
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
-        .character-wrapper {
+        .view-section.active {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .avatar-container {
             position: relative;
+            margin-bottom: 20px;
+            animation: floatAnim 4s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .avatar {
+            width: 130px;
+            height: auto;
+            filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
+            border-radius: 12px;
+            transition: filter 0.4s ease;
+        }
+
+        .title {
+            font-size: 38px;
+            font-weight: 300;
+            letter-spacing: 14px;
+            margin: 0;
+            color: var(--primary);
+            text-transform: lowercase;
+            padding-left: 14px;
+            text-shadow: 0 0 15px var(--bg-glow);
+            transition: color 0.4s ease;
+        }
+
+        .title span {
+            color: var(--secondary);
+            text-shadow: 0 0 15px var(--secondary);
+            transition: color 0.4s ease;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: var(--primary);
+            margin-top: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--bg-glow);
+            transition: color 0.4s ease;
+        }
+
+        .section-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 26px;
+            letter-spacing: 8px;
+            color: var(--primary);
+            text-transform: lowercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 12px var(--bg-glow);
+            transition: color 0.4s ease;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--border-color);
+            padding: 14px 20px;
+            border-radius: 14px;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--bg-glow), inset 0 0 10px var(--bg-glow);
+            transform: translateY(-2px);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .grid-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--bg-glow);
+            transform: translateY(-4px);
+            background: rgba(10, 20, 10, 0.9);
+        }
+
+        .grid-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .grid-card p {
+            margin: 0;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-bar {
+            width: 100%;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .menu-container {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: -10px;
+        }
+
+        .menu-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .character-wrapper img {
-            display: block;
-            object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+        .menu-btn svg {
+            fill: var(--primary);
+            width: 20px;
+            height: 20px;
+            filter: drop-shadow(0 0 6px var(--bg-glow));
+            transition: transform 0.3s ease, fill 0.4s ease;
         }
 
-        .description-word {
-            color: #ff3333;
-            font-size: 14px;
-            letter-spacing: 6px;
+        .menu-container:hover .menu-btn {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--bg-glow);
+            transform: scale(1.08);
+        }
+
+        .menu-container:hover .menu-btn svg {
+            transform: rotate(90deg);
+        }
+
+        .dropdown-menu {
+            display: flex;
+            position: absolute;
+            bottom: calc(100% + 20px);
+            left: 50%;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(3, 5, 3, 0.95);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px var(--bg-glow);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translate(-50%, 10px) scale(0.95);
+            pointer-events: none;
+            transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
+            visibility: hidden;
+        }
+
+        .dropdown-menu::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background: transparent;
+        }
+
+        .menu-container:hover .dropdown-menu {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+            pointer-events: auto;
+            visibility: visible;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+        }
+
+        .icon-link {
+            background: transparent;
+            border: 1px solid transparent;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-link svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--primary);
+            transition: fill 0.4s ease;
+        }
+
+        .icon-link:hover {
+            background-color: var(--bg-glow);
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--bg-glow);
+            transform: scale(1.05);
+        }
+
+        /* REBUILT CLEAN MODERN SETTINGS MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(14px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: rgba(4, 8, 4, 0.98);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            width: 92%;
+            max-width: 580px;
+            max-height: 88vh;
+            padding: 30px;
+            box-shadow: 0 40px 90px rgba(0,0,0,0.95), 0 0 50px var(--bg-glow);
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            transform: scale(0.96);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
+            color: #ffffff;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--primary);
+            margin: 0;
+            text-transform: lowercase;
+            text-shadow: 0 0 10px var(--bg-glow);
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--bg-glow);
+            box-shadow: 0 0 12px var(--bg-glow);
+            transform: scale(1.05);
+        }
+
+        .modal-body-scroll {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            padding-right: 4px;
+        }
+
+        /* Custom Scrollbar for sleek look */
+        .modal-body-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-body-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 3px;
+        }
+        .modal-body-scroll::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 14px;
+        }
+
+        .setting-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
-            transition: font-size 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-label::before {
+            content: '//';
+            color: var(--primary);
+        }
+
+        .character-select-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .char-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            transition: all 0.25s ease;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .char-btn span {
+            font-size: 9px;
+            opacity: 0.4;
+            letter-spacing: 1px;
+        }
+
+        .char-btn:hover {
+            border-color: var(--primary);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .char-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            color: #fff;
+            box-shadow: 0 0 15px var(--bg-glow);
+        }
+
+        .char-btn.active span {
+            opacity: 0.9;
+            color: var(--primary);
+        }
+
+        .slider-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .custom-slider {
+            width: 100%;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .physics-select-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 8px;
+        }
+
+        .physics-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .physics-btn .phys-title {
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .physics-btn .phys-desc {
+            font-size: 9px;
+            opacity: 0.5;
+            letter-spacing: 0.5px;
+        }
+
+        .physics-btn:hover {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .physics-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            color: #fff;
+            box-shadow: 0 0 15px var(--bg-glow);
+        }
+
+        .physics-btn.active .phys-title {
+            color: var(--primary);
+        }
+
+        .toggle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            color: #fff;
+            box-shadow: 0 0 10px var(--bg-glow);
+        }
+
+        .action-btn {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            color: var(--primary);
+            padding: 14px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-glow);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--bg-glow);
+            transform: translateY(-2px);
+        }
+
+        .modal-footer-actions {
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
+        }
+
+        .btn-apply {
+            flex: 1.5;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-apply:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 18px var(--primary);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.05);
         }
     </style>
 </head>
 <body>
 
-    <div class="system-status" style="display: none;">SYS.GRID // ACTIVE</div>
+    <!-- Space-time Gravity Blanket Canvas -->
+    <canvas id="space-canvas"></canvas>
 
-    <div class="ui-container">
-        <select id="animationSelect">
-            <option value="standardWarp">Standard Warp</option>
-            <option value="magneticField">Magnetic Powder</option>
-            <option value="cyberGrid">Cyber Grid</option>
-            <option value="neonVortex">Neon Vortex</option>
-        </select>
-        <select id="characterSelect">
-            <option value="character1">Character 1</option>
-            <option value="character2">Character 2</option>
-            <option value="character3">Character 3</option>
-        </select>
-    </div>
-
-    <div class="content-display">
-        <div class="character-wrapper" id="charWrapper">
-            <img id="charImage" src="" alt="Character">
+    <div class="top-bar">
+        <div class="top-status">
+            <div class="pulse-dot"></div>
+            <div id="sys-status-text">SYS.GRID // ACTIVE</div>
         </div>
-        <div class="description-word" id="descWord">SWORD</div>
+        <div id="live-clock">00:00:00</div>
     </div>
 
-    <canvas id="canvas"></canvas>
+    <!-- HOME VIEW -->
+    <div id="view-home" class="view-section active">
+        <div class="avatar-container">
+            <img id="active-avatar" class="avatar" src="" alt="Character Render">
+        </div>
+        <h1 class="title"><span id="title-part1"></span><span id="title-part2"></span></h1>
+        <div id="active-subtitle" class="subtitle"></div>
+    </div>
+
+    <!-- GAMES VIEW -->
+    <div id="view-games" class="view-section">
+        <div class="section-header">
+            <div class="section-title">games</div>
+            <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
+        </div>
+        <div id="games-grid" class="grid-container">
+            <!-- Items cleared for manual addition -->
+        </div>
+    </div>
+
+    <!-- APPS VIEW -->
+    <div id="view-apps" class="view-section">
+        <div class="section-header">
+            <div class="section-title">apps</div>
+            <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
+        </div>
+        <div id="apps-grid" class="grid-container">
+            <!-- Items cleared for manual addition -->
+        </div>
+    </div>
+
+    <!-- BROWSER VIEW -->
+    <div id="view-browser" class="view-section">
+        <div class="section-header">
+            <div class="section-title">gateway browser</div>
+            <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
+        </div>
+        <div style="font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-top: 20px;">
+            type query above and press enter to route externally
+        </div>
+    </div>
+
+    <!-- FOOTER MENU -->
+    <div class="footer-bar">
+        <div class="menu-container">
+            <button class="menu-btn">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </button>
+            <div class="dropdown-menu">
+                <button class="icon-link" title="Home" onclick="switchView('home')">
+                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                </button>
+                <button class="icon-link" title="Games" onclick="switchView('games')">
+                    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-4c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                </button>
+                <button class="icon-link" title="Apps" onclick="switchView('apps')">
+                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4H4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                </button>
+                <button class="icon-link" title="Browser" onclick="switchView('browser')">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </button>
+                <button class="icon-link" title="Settings" onclick="openSettingsModal()">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c-.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLEANED SETTINGS MODAL WITH NEW PHYSICS MODES -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">system configuration & parameters</h2>
+                <button class="close-btn" onclick="toggleModal(false)">&times;</button>
+            </div>
+
+            <div class="modal-body-scroll">
+                <div class="setting-group">
+                    <div class="setting-label">Character Interface Protocol</div>
+                    <div class="character-select-grid" id="modal-char-grid">
+                        <button class="char-btn" onclick="stageTheme('subaru', this)">Subaru <span>[core]</span></button>
+                        <button class="char-btn" onclick="stageTheme('reinhard', this)">Reinhard <span>[sword]</span></button>
+                        <button class="char-btn" onclick="stageTheme('emilia', this)">Emilia <span>[frost]</span></button>
+                        <button class="char-btn" onclick="stageTheme('satella', this)">Satella <span>[envy]</span></button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">Gravity Blanket Grid Density</div>
+                    <div class="slider-container">
+                        <div class="slider-info">
+                            <span>Resolution Scale</span>
+                            <span id="grid-val">45px</span>
+                        </div>
+                        <input type="range" id="modal-slider" min="25" max="80" step="5" value="45" class="custom-slider" oninput="stageSpacing(this.value)">
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">Interface Physics & Distortion Mode</div>
+                    <div class="physics-select-grid" id="modal-physics-grid">
+                        <button class="physics-btn" onclick="stagePhysics('warp', this)">
+                            <div class="phys-title">Standard Warp <span>[Smooth Pull]</span></div>
+                            <div class="phys-desc">Classic fluid gravitational pull towards cursor proximity.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('magnetic', this)">
+                            <div class="phys-title">Magnetic Powder <span>[Inertial Drag]</span></div>
+                            <div class="phys-desc">Custom shape particles get pulled to cursor and lag behind if you move too fast.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('quantum', this)">
+                            <div class="phys-title">Quantum Matrix <span>[Hex Cascade]</span></div>
+                            <div class="phys-desc">Rotates and scales floating polygonal matrix shapes reacting to cursor speed.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('pulse', this)">
+                            <div class="phys-title">Neon Pulse Wave <span>[Orbital Rings]</span></div>
+                            <div class="phys-desc">Expanding concentric energy rings pulsing outward from cursor interaction point.</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">Visual & Animation Toggles</div>
+                    <div class="toggle-grid">
+                        <button class="toggle-btn" id="modal-toggle-gravity" onclick="stageToggle('gravity')">Grid Warp: ON</button>
+                        <button class="toggle-btn" id="modal-toggle-float" onclick="stageToggle('float')">Avatar Float: ON</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">Security & Cloaking Protocol</div>
+                    <button class="action-btn" onclick="openAboutBlank()">
+                        <svg style="width:14px;height:14px;fill:var(--primary);" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                        Initialize about:blank Cloak
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-footer-actions">
+                <button class="btn-cancel" onclick="resetAllSettings()">Reset All</button>
+                <button class="btn-apply" onclick="applyChanges()">Apply Changes</button>
+                <button class="btn-cancel" onclick="toggleModal(false)">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Character configurations with individual sizing multipliers and unique scales
         const characters = {
-            character1: {
-                src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="260" viewBox="0 0 180 260"><rect width="180" height="260" fill="none"/><circle cx="90" cy="70" r="35" fill="%23ff3333"/><path d="M50 120 L130 120 L140 240 L40 240 Z" fill="%23ffffff"/><polygon points="90,10 110,50 70,50" fill="%23ff9999"/></svg>',
-                word: 'SWORD',
-                scale: 1.6,       // Scaled up nicely
-                fontSize: '16px'
+            subaru: {
+                namePart1: "",
+                namePart2: "",
+                subtitle: "core",
+                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
+                primary: "#00ff66",
+                secondary: "#ff6f00",
+                glow: "rgba(0, 255, 102, 0.3)",
+                cardBg: "rgba(5, 10, 5, 0.85)",
+                border: "rgba(0, 255, 102, 0.3)",
+                bg: "#030503",
+                textColor: "#ffffff"
             },
-            character2: {
-                src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="260" viewBox="0 0 180 260"><rect width="180" height="260" fill="none"/><circle cx="90" cy="70" r="35" fill="%233388ff"/><path d="M40 130 L140 130 L120 250 L60 250 Z" fill="%23e0e0e0"/><polygon points="30,100 90,80 150,100" fill="%233388ff"/></svg>',
-                word: 'MAGE',
-                scale: 1.8,       // Slightly larger unique scale for visual balance
-                fontSize: '18px'
+            reinhard: {
+                namePart1: "",
+                namePart2: "",
+                subtitle: "sword",
+                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
+                primary: "#ff2a2a",     /* Deep crimson red */
+                secondary: "#0055ff",    /* Dark navy blue */
+                glow: "rgba(255, 42, 42, 0.25)",
+                cardBg: "rgba(10, 5, 5, 0.85)",
+                border: "rgba(255, 42, 42, 0.3)",
+                bg: "#030305",
+                textColor: "#ffffff"
             },
-            character3: {
-                src: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="260" viewBox="0 0 180 260"><rect width="180" height="260" fill="none"/><circle cx="90" cy="70" r="35" fill="%2333ff66"/><path d="M45 110 L135 110 L150 240 L30 240 Z" fill="%23111111"/><polygon points="90,20 120,60 60,60" fill="%2333ff66"/></svg>',
-                word: 'ROGUE',
-                scale: 1.5,       // Tailored custom scale
-                fontSize: '15px'
+            emilia: {
+                namePart1: "",
+                namePart2: "",
+                subtitle: "frost",
+                avatar: "https://static.wikia.nocookie.net/rezero/images/5/59/Emilia_Season_1_Character_Design.png",
+                primary: "#8a2be2",
+                secondary: "#9932cc",
+                glow: "rgba(138, 43, 226, 0.3)",
+                cardBg: "rgba(255, 255, 255, 0.95)",
+                border: "rgba(138, 43, 226, 0.3)",
+                bg: "#ffffff",
+                textColor: "#111111"
+            },
+            satella: {
+                namePart1: "satella",
+                namePart2: "",
+                subtitle: "envy",
+                avatar: "https://static.wikia.nocookie.net/rezero/images/3/3a/Satella_anime.png",
+                primary: "#9400d3",
+                secondary: "#4b0082",
+                glow: "rgba(148, 0, 211, 0.3)",
+                cardBg: "rgba(10, 2, 15, 0.85)",
+                border: "rgba(148, 0, 211, 0.3)",
+                bg: "#05010a",
+                textColor: "#ffffff"
             }
         };
 
-        const charSelect = document.getElementById('characterSelect');
-        const charImage = document.getElementById('charImage');
-        const charWrapper = document.getElementById('charWrapper');
-        const descWord = document.getElementById('descWord');
+        // Current App State
+        let currentTheme = 'subaru';
+        let gridSpacing = 45;
+        let physicsMode = 'warp';
+        let gravityEnabled = true;
+        let floatEnabled = true;
 
-        function updateCharacter() {
-            const config = characters[charSelect.value];
-            charImage.src = config.src;
-            descWord.textContent = config.word;
-            descWord.style.fontSize = config.fontSize;
-            
-            // Apply distinct scaling factor based on active character selection
-            charImage.style.width = `${160 * config.scale}px`;
-            charImage.style.height = `${220 * config.scale}px`;
-        }
+        // Staged Settings (Before clicking apply)
+        let stagedTheme = currentTheme;
+        let stagedSpacing = gridSpacing;
+        let stagedPhysics = physicsMode;
+        let stagedGravity = gravityEnabled;
+        let stagedFloat = floatEnabled;
 
-        charSelect.addEventListener('change', updateCharacter);
-        updateCharacter(); // Initialize default view
-
-        // Canvas Background Animation Engine
-        const canvas = document.getElementById('canvas');
+        // Canvas & Animation Engine
+        const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
-        const select = document.getElementById('animationSelect');
+        let mouseX = -1000;
+        let mouseY = -1000;
+        let prevMouseX = -1000;
+        let prevMouseY = -1000;
+        let mouseSpeed = 0;
 
-        let width, height;
+        // Particles for custom shapes (Magnetic powder, Quantum, etc.)
         let particles = [];
-        let mouse = { x: null, y: null, px: null, py: null, vx: 0, vy: 0 };
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
         }
-        window.addEventListener('resize', resize);
-        resize();
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.px = mouse.x;
-            mouse.py = mouse.y;
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            mouse.vx = mouse.x - (mouse.px || mouse.x);
-            mouse.vy = mouse.y - (mouse.py || mouse.y);
-        });
-
-        window.addEventListener('mouseleave', () => {
-            mouse.x = null;
-            mouse.y = null;
-            mouse.vx = 0;
-            mouse.vy = 0;
-        });
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = 0;
-                this.vy = 0;
-                this.size = Math.random() * 1.5 + 1;
-                this.angle = Math.random() * Math.PI * 2;
-                this.speed = Math.random() * 1 + 0.5;
-                this.color = Math.random() > 0.8 ? '#ff3333' : 'rgba(255, 255, 255, 0.6)';
-            }
-            update(mode) {
-                if (mode === 'standardWarp') {
-                    this.y -= this.speed * 1.5;
-                    this.x += Math.sin(this.angle) * 0.5;
-                    this.angle += 0.02;
-                    if (this.y < 0) {
-                        this.y = height + 10;
-                        this.x = Math.random() * width;
-                    }
-                } else if (mode === 'magneticField') {
-                    if (mouse.x !== null && mouse.y !== null) {
-                        let dx = mouse.x - this.x;
-                        let dy = mouse.y - this.y;
-                        let dist = Math.sqrt(dx * dx + dy * dy);
-                        let force = Math.min(500 / (dist + 40), 12);
-                        
-                        this.vx += (dx / dist) * force * 0.06 - mouse.vx * 0.04;
-                        this.vy += (dy / dist) * force * 0.06 - mouse.vy * 0.04;
-                    }
-                    this.vx *= 0.90;
-                    this.vy *= 0.90;
-                    this.x += this.vx;
-                    this.y += this.vy;
-
-                    if (this.x < 0) this.x = width;
-                    if (this.x > width) this.x = 0;
-                    if (this.y < 0) this.y = height;
-                    if (this.y > height) this.y = 0;
-                } else if (mode === 'cyberGrid') {
-                    this.angle += 0.03;
-                    this.y += Math.sin(this.angle) * 0.8;
-                } else if (mode === 'neonVortex') {
-                    let cx = width / 2;
-                    let cy = height / 2;
-                    let dx = this.x - cx;
-                    let dy = this.y - cy;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    let angle = Math.atan2(dy, dx) + 0.018;
-                    let targetDist = dist - 0.7;
-                    if (targetDist < 10) targetDist = Math.max(width, height) * 0.5;
-                    
-                    this.x = cx + Math.cos(angle) * targetDist;
-                    this.y = cy + Math.sin(angle) * targetDist;
-                }
-            }
-            draw(mode) {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                if (mode === 'cyberGrid') {
-                    ctx.rect(this.x, this.y, this.size * 1.5, this.size * 1.5);
-                } else {
-                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                }
-                ctx.fill();
-            }
-        }
+        window.addEventListener('resize', resizeCanvas);
 
         function initParticles() {
             particles = [];
-            let count = Math.floor((width * height) / 14000);
+            let count = Math.floor((canvas.width * canvas.height) / 4500);
+            count = Math.max(40, Math.min(count, 150));
             for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    baseX: Math.random() * canvas.width,
+                    baseY: Math.random() * canvas.height,
+                    vx: 0,
+                    vy: 0,
+                    size: Math.random() * 4 + 2,
+                    shape: Math.random() > 0.5 ? 'circle' : (Math.random() > 0.5 ? 'square' : 'triangle'),
+                    angle: Math.random() * Math.PI * 2,
+                    spin: (Math.random() - 0.5) * 0.05
+                });
             }
         }
-        initParticles();
-        window.addEventListener('resize', initParticles);
 
-        function animate() {
-            let mode = select.value;
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-            ctx.fillRect(0, 0, width, height);
+        window.addEventListener('mousemove', (e) => {
+            prevMouseX = mouseX;
+            prevMouseY = mouseY;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            let dx = mouseX - prevMouseX;
+            let dy = mouseY - prevMouseY;
+            mouseSpeed = Math.sqrt(dx * dx + dy * dy);
+        });
 
-            particles.forEach(p => {
-                p.update(mode);
-                p.draw(mode);
-            });
+        window.addEventListener('mouseleave', () => {
+            mouseX = -1000;
+            mouseY = -1000;
+            mouseSpeed = 0;
+        });
 
-            if (mode === 'cyberGrid') {
-                ctx.strokeStyle = 'rgba(255, 0, 0, 0.06)';
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let primaryColor = characters[currentTheme].primary;
+
+            if (physicsMode === 'warp' && gravityEnabled) {
+                // Standard Warp Grid
+                ctx.strokeStyle = primaryColor;
                 ctx.lineWidth = 1;
-                for (let i = 0; i < particles.length; i += 5) {
-                    for (let j = i + 1; j < i + 4 && j < particles.length; j++) {
-                        let dx = particles[i].x - particles[j].x;
-                        let dy = particles[i].y - particles[j].y;
-                        if (dx * dx + dy * dy < 4500) {
-                            ctx.beginPath();
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
+                ctx.globalAlpha = 0.22;
+
+                let cols = Math.floor(canvas.width / gridSpacing) + 1;
+                let rows = Math.floor(canvas.height / gridSpacing) + 1;
+
+                let points = [];
+                for (let r = 0; r <= rows; r++) {
+                    let rowPoints = [];
+                    for (let c = 0; c <= cols; c++) {
+                        let origX = c * gridSpacing;
+                        let origY = r * gridSpacing;
+                        let x = origX;
+                        let y = origY;
+
+                        let dx = mouseX - origX;
+                        let dy = mouseY - origY;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        let maxDist = 180;
+
+                        if (dist < maxDist && dist > 0) {
+                            let force = (1 - dist / maxDist) * 25;
+                            x -= (dx / dist) * force;
+                            y -= (dy / dist) * force;
                         }
+
+                        rowPoints.push({ x, y });
                     }
+                    points.push(rowPoints);
+                }
+
+                // Draw Grid Lines
+                for (let r = 0; r < points.length; r++) {
+                    ctx.beginPath();
+                    for (let c = 0; c < points[r].length; c++) {
+                        if (c === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
+                        else ctx.lineTo(points[r][c].x, points[r][c].y);
+                    }
+                    ctx.stroke();
+                }
+
+                for (let c = 0; c < points[0].length; c++) {
+                    ctx.beginPath();
+                    for (let r = 0; r < points.length; r++) {
+                        if (r === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
+                        else ctx.lineTo(points[r][c].x, points[r][c].y);
+                    }
+                    ctx.stroke();
+                }
+
+            } else if (physicsMode === 'magnetic') {
+                // Magnetic Powder mode: Particles pulled to cursor, lag behind if moving fast
+                ctx.fillStyle = primaryColor;
+                ctx.strokeStyle = primaryColor;
+
+                particles.forEach(p => {
+                    let dx = mouseX - p.x;
+                    let dy = mouseY - p.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (mouseX > 0 && dist < 250) {
+                        // Pull towards cursor with velocity lag
+                        let pullStrength = Math.min(15, (250 - dist) * 0.05);
+                        p.vx += (dx / dist) * pullStrength * 0.2;
+                        p.vy += (dy / dist) * pullStrength * 0.2;
+                    } else {
+                        // Return to baseline float
+                        p.vx += (p.baseX - p.x) * 0.02;
+                        p.vy += (p.baseY - p.y) * 0.02;
+                    }
+
+                    // Apply drag / friction based on mouse speed (if moving too fast, they fall behind)
+                    let friction = mouseSpeed > 30 ? 0.95 : 0.88;
+                    p.vx *= friction;
+                    p.vy *= friction;
+
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.angle += p.spin;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.angle);
+                    ctx.globalAlpha = 0.45;
+
+                    if (p.shape === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (p.shape === 'square') {
+                        ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2);
+                    } else {
+                        ctx.beginPath();
+                        ctx.moveTo(0, -p.size * 1.5);
+                        ctx.lineTo(p.size * 1.2, p.size * 1.2);
+                        ctx.lineTo(-p.size * 1.2, p.size * 1.2);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                });
+
+            } else if (physicsMode === 'quantum') {
+                // Quantum Matrix: Hexagonal cascading grid of shapes reacting to cursor velocity
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 1;
+                particles.forEach(p => {
+                    p.angle += 0.02;
+                    let dx = mouseX - p.x;
+                    let dy = mouseY - p.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    let scaleFactor = 1;
+
+                    if (mouseX > 0 && dist < 200) {
+                        scaleFactor = 1 + (200 - dist) / 50 + (mouseSpeed * 0.02);
+                    }
+
+                    ctx.save();
+                    ctx.translate(p.baseX, p.baseY);
+                    ctx.rotate(p.angle);
+                    ctx.scale(scaleFactor, scaleFactor);
+                    ctx.globalAlpha = 0.35;
+
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        let angle = (i * Math.PI) / 3;
+                        let hx = Math.cos(angle) * (p.size * 2);
+                        let hy = Math.sin(angle) * (p.size * 2);
+                        if (i === 0) ctx.moveTo(hx, hy);
+                        else ctx.lineTo(hx, hy);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                    ctx.restore();
+                });
+
+            } else if (physicsMode === 'pulse') {
+                // Neon Pulse Wave: Expanding rings from mouse position
+                ctx.strokeStyle = primaryColor;
+                ctx.lineWidth = 1.5;
+                if (!window.pulseRings) window.pulseRings = [];
+
+                if (mouseX > 0 && Math.random() < 0.25) {
+                    window.pulseRings.push({ x: mouseX, y: mouseY, radius: 5, alpha: 0.8 });
+                }
+
+                for (let i = window.pulseRings.length - 1; i >= 0; i--) {
+                    let ring = window.pulseRings[i];
+                    ring.radius += 3;
+                    ring.alpha -= 0.015;
+
+                    if (ring.alpha <= 0) {
+                        window.pulseRings.splice(i, 1);
+                        continue;
+                    }
+
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = primaryColor;
+                    ctx.globalAlpha = ring.alpha;
+                    ctx.stroke();
+                    ctx.restore();
                 }
             }
 
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateCanvas);
         }
-        animate();
+
+        // Clock & Status
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // View Management
+        function switchView(viewName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewName}`).classList.add('active');
+        }
+
+        // Filter Grid function for Games and Apps
+        function filterGrid(input, gridId) {
+            let filter = input.value.toLowerCase();
+            let grid = document.getElementById(gridId);
+            let cards = grid.getElementsByClassName('grid-card');
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByTagName('h3')[0];
+                if (title) {
+                    let text = title.textContent || title.innerText;
+                    cards[i].style.display = text.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
+        }
+
+        // Browser Search Function
+        function handleBrowserSearch(e) {
+            if (e.key === 'Enter') {
+                let query = e.target.value.trim();
+                if (query) {
+                    let url = query.startsWith('http://') || query.startsWith('https://') ? query : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    window.open(url, '_blank');
+                }
+            }
+        }
+
+        // Settings Modal Controls
+        function openSettingsModal() {
+            // Sync staged variables with current active state
+            stagedTheme = currentTheme;
+            stagedSpacing = gridSpacing;
+            stagedPhysics = physicsMode;
+            stagedGravity = gravityEnabled;
+            stagedFloat = floatEnabled;
+
+            updateModalUI();
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('settings-modal');
+            if (show) modal.classList.add('active');
+            else modal.classList.remove('active');
+        }
+
+        function stageTheme(themeKey, btn) {
+            stagedTheme = themeKey;
+            document.querySelectorAll('#modal-char-grid .char-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function stageSpacing(val) {
+            stagedSpacing = parseInt(val);
+            document.getElementById('grid-val').innerText = `${val}px`;
+            document.getElementById('modal-slider').value = val;
+        }
+
+        function stagePhysics(modeKey, btn) {
+            stagedPhysics = modeKey;
+            document.querySelectorAll('#modal-physics-grid .physics-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function stageToggle(toggleType) {
+            if (toggleType === 'gravity') {
+                stagedGravity = !stagedGravity;
+                let btn = document.getElementById('modal-toggle-gravity');
+                btn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
+                if (stagedGravity) btn.classList.add('active');
+                else btn.classList.remove('active');
+            } else if (toggleType === 'float') {
+                stagedFloat = !stagedFloat;
+                let btn = document.getElementById('modal-toggle-float');
+                btn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
+                if (stagedFloat) btn.classList.add('active');
+                else btn.classList.remove('active');
+            }
+        }
+
+        function updateModalUI() {
+            // Highlight active character button
+            const charBtns = document.querySelectorAll('#modal-char-grid .char-btn');
+            charBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(stagedTheme)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Set slider value
+            stageSpacing(stagedSpacing);
+
+            // Highlight active physics button
+            const physBtns = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('onclick').includes(stagedPhysics)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Set toggle buttons state
+            let gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
+            if (stagedGravity) gravBtn.classList.add('active'); else gravBtn.classList.remove('active');
+
+            let floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
+            if (stagedFloat) floatBtn.classList.add('active'); else floatBtn.classList.remove('active');
+        }
+
+        function applyChanges() {
+            currentTheme = stagedTheme;
+            gridSpacing = stagedSpacing;
+            physicsMode = stagedPhysics;
+            gravityEnabled = stagedGravity;
+            floatEnabled = stagedFloat;
+
+            applyThemeToDOM(currentTheme);
+            toggleModal(false);
+        }
+
+        function resetAllSettings() {
+            stagedTheme = 'subaru';
+            stagedSpacing = 45;
+            stagedPhysics = 'warp';
+            stagedGravity = true;
+            stagedFloat = true;
+            updateModalUI();
+        }
+
+        function applyThemeToDOM(themeKey) {
+            const data = characters[themeKey];
+            const root = document.documentElement;
+
+            root.style.setProperty('--primary', data.primary);
+            root.style.setProperty('--secondary', data.secondary);
+            root.style.setProperty('--bg-glow', data.glow);
+            root.style.setProperty('--card-bg', data.cardBg);
+            root.style.setProperty('--border-color', data.border);
+            root.style.setProperty('--text-color', data.textColor);
+            document.body.style.backgroundColor = data.bg;
+
+            document.getElementById('title-part1').innerText = data.namePart1;
+            document.getElementById('title-part2').innerText = data.namePart2;
+            document.getElementById('active-subtitle').innerText = data.subtitle;
+
+            const avatarImg = document.getElementById('active-avatar');
+            avatarImg.src = data.avatar;
+
+            // Avatar Float Animation Toggle
+            const avatarContainer = document.querySelector('.avatar-container');
+            if (floatEnabled) {
+                avatarContainer.style.animation = 'floatAnim 4s ease-in-out infinite';
+            } else {
+                avatarContainer.style.animation = 'none';
+            }
+        }
+
+        function openAboutBlank() {
+            let win = window.open();
+            win.document.write(document.documentElement.outerHTML);
+            win.document.close();
+        }
+
+        // Initialize default theme on load
+        window.onload = () => {
+            applyThemeToDOM(currentTheme);
+            resizeCanvas();
+            animateCanvas();
+        };
     </script>
 </body>
 </html>
