@@ -1,1105 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subaru Hub // Core</title>
-    <style>
-        :root {
-            --primary: #00ff66;
-            --secondary: #ff6f00;
-            --bg-glow: rgba(0, 255, 102, 0.3);
-            --card-bg: rgba(5, 10, 5, 0.85);
-            --border-color: rgba(0, 255, 102, 0.3);
-            --text-color: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #030503;
-            color: var(--text-color);
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-            transition: background 0.5s ease, color 0.4s ease;
-        }
-
-        #space-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .top-bar, .view-section, .footer-bar, .modal-overlay {
-            position: relative;
-            z-index: 2;
-        }
-
-        .top-bar {
-            width: 100%;
-            padding: 25px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            color: var(--primary);
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--bg-glow);
-            transition: color 0.4s ease;
-        }
-
-        .top-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pulse-dot {
-            width: 7px;
-            height: 7px;
-            background-color: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
-            animation: pulse 2s infinite ease-in-out;
-            transition: background-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px var(--primary); }
-        }
-
-        .view-section {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            text-align: center;
-            width: 100%;
-            max-width: 900px;
-            padding: 20px;
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .view-section.active {
-            display: flex;
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .avatar-container {
-            position: relative;
-            margin-bottom: 20px;
-            animation: floatAnim 4s ease-in-out infinite;
-        }
-
-        @keyframes floatAnim {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .avatar {
-            width: 130px;
-            height: auto;
-            filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
-            border-radius: 12px;
-            transition: filter 0.4s ease;
-        }
-
-        .title {
-            font-size: 38px;
-            font-weight: 300;
-            letter-spacing: 14px;
-            margin: 0;
-            color: var(--primary);
-            text-transform: lowercase;
-            padding-left: 14px;
-            text-shadow: 0 0 15px var(--bg-glow);
-            transition: color 0.4s ease;
-        }
-
-        .title span {
-            color: var(--secondary);
-            text-shadow: 0 0 15px var(--secondary);
-            transition: color 0.4s ease;
-        }
-
-        .subtitle {
-            font-size: 11px;
-            color: var(--primary);
-            margin-top: 15px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px var(--bg-glow);
-            transition: color 0.4s ease;
-        }
-
-        .section-header {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 26px;
-            letter-spacing: 8px;
-            color: var(--primary);
-            text-transform: lowercase;
-            margin-bottom: 15px;
-            text-shadow: 0 0 12px var(--bg-glow);
-            transition: color 0.4s ease;
-        }
-
-        .search-box {
-            width: 100%;
-            max-width: 450px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid var(--border-color);
-            padding: 14px 20px;
-            border-radius: 14px;
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            letter-spacing: 1.5px;
-            outline: none;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .search-box:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 25px var(--bg-glow), inset 0 0 10px var(--bg-glow);
-            transform: translateY(-2px);
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            width: 100%;
-            max-height: 50vh;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .grid-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .grid-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--bg-glow);
-            transform: translateY(-4px);
-            background: rgba(10, 20, 10, 0.9);
-        }
-
-        .grid-card h3 {
-            margin: 0 0 8px 0;
-            font-size: 14px;
-            letter-spacing: 2px;
-            color: var(--primary);
-        }
-
-        .grid-card p {
-            margin: 0;
-            font-size: 9px;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .footer-bar {
-            width: 100%;
-            padding: 25px 40px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
-
-        .menu-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .menu-btn {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .menu-btn svg {
-            fill: var(--primary);
-            width: 20px;
-            height: 20px;
-            filter: drop-shadow(0 0 6px var(--bg-glow));
-            transition: transform 0.3s ease, fill 0.4s ease;
-        }
-
-        .menu-container:hover .menu-btn {
-            border-color: var(--primary);
-            box-shadow: 0 0 25px var(--bg-glow);
-            transform: scale(1.08);
-        }
-
-        .menu-container:hover .menu-btn svg {
-            transform: rotate(90deg);
-        }
-
-        .dropdown-menu {
-            display: flex;
-            position: absolute;
-            bottom: 60px;
-            left: 0;
-            flex-direction: column;
-            gap: 8px;
-            background: rgba(3, 5, 3, 0.95);
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px var(--bg-glow);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transform: translateY(10px) scale(0.95);
-            pointer-events: none;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
-
-        .menu-container:hover .dropdown-menu {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto;
-        }
-
-        .icon-link {
-            background: transparent;
-            border: 1px solid transparent;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .icon-link svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--primary);
-            transition: fill 0.4s ease;
-        }
-
-        .icon-link:hover {
-            background-color: var(--bg-glow);
-            border-color: var(--primary);
-            box-shadow: 0 0 12px var(--bg-glow);
-            transform: scale(1.05);
-        }
-
-        /* Settings Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background: rgba(4, 8, 4, 0.96);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            width: 92%;
-            max-width: 540px;
-            max-height: 85vh;
-            padding: 25px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.95), 0 0 40px var(--bg-glow);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            transform: scale(0.95);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(16px);
-            color: #ffffff;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-        }
-
-        .modal-title {
-            font-size: 14px;
-            letter-spacing: 3px;
-            color: var(--primary);
-            margin: 0;
-            text-transform: lowercase;
-        }
-
-        .close-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--primary);
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .close-btn:hover {
-            background: var(--bg-glow);
-            box-shadow: 0 0 10px var(--bg-glow);
-        }
-
-        .modal-body-scroll {
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding-right: 5px;
-        }
-
-        .setting-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .setting-label {
-            font-size: 10px;
-            letter-spacing: 2.5px;
-            color: rgba(255, 255, 255, 0.5);
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .setting-label::before {
-            content: '//';
-            color: var(--primary);
-        }
-
-        .character-select-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .char-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border-color);
-            padding: 12px 10px;
-            border-radius: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            letter-spacing: 1.5px;
-            transition: all 0.25s ease;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .char-btn span {
-            font-size: 9px;
-            opacity: 0.4;
-            letter-spacing: 1px;
-        }
-
-        .char-btn:hover {
-            border-color: var(--primary);
-            color: #fff;
-            background: rgba(0, 255, 102, 0.05);
-        }
-
-        .char-btn.active {
-            border-color: var(--primary);
-            background: var(--bg-glow);
-            color: #fff;
-            box-shadow: 0 0 15px var(--bg-glow);
-        }
-
-        .char-btn.active span {
-            opacity: 0.9;
-            color: var(--primary);
-        }
-
-        .slider-container {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-            padding: 12px 15px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .slider-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .custom-slider {
-            width: 100%;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        .toggle-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .toggle-btn {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            letter-spacing: 1px;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-        .toggle-btn.active {
-            border-color: var(--primary);
-            background: var(--bg-glow);
-            color: #fff;
-            box-shadow: 0 0 10px var(--bg-glow);
-        }
-
-        .action-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--primary);
-            padding: 14px;
-            border-radius: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            text-align: center;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .action-btn:hover {
-            background: var(--bg-glow);
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--bg-glow);
-            transform: translateY(-2px);
-        }
-
-        .modal-footer-actions {
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-        }
-
-        .btn-apply {
-            flex: 1;
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 11px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-apply:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 15px var(--primary);
-        }
-
-        .btn-cancel {
-            background: rgba(0,0,0,0.5);
-            color: #fff;
-            border: 1px solid var(--border-color);
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 11px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-cancel:hover {
-            background: rgba(255,255,255,0.05);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SYS.GRID // Subaru Hub</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --grid-dot: rgba(168, 85, 247, 0.15);
+      --text: #3b3b4f;
+      --accent: #a855f7;
+      --border: #3b3b4f;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', Courier, monospace;
+      background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+      background-size: 24px 24px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 20px;
+      width: 90%;
+      max-width: 600px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+
+    .display-container {
+      position: relative;
+      padding: 20px;
+      border: 1px dashed var(--border);
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Fixed character image styling */
+    .character-img {
+      width: 180px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .label-text {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: var(--accent);
+    }
+
+    /* Clean, non-AI settings menu style */
+    .settings-menu {
+      position: fixed;
+      bottom: 20px;
+      background: #0d0d0f;
+      border: 1px solid var(--border);
+      color: #c0c0d0;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 16px 24px;
+      box-shadow: none;
+      border-radius: 0px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .settings-menu h2 {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: var(--accent);
+      margin: 0;
+      border-bottom: none;
+    }
+
+    .settings-menu button {
+      background: transparent;
+      border: 1px solid #52527a;
+      color: #e2e8f0;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .settings-menu button:hover {
+      background: var(--accent);
+      color: #0d0d0f;
+      border-color: var(--accent);
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Space-time Gravity Blanket Canvas -->
-    <canvas id="space-canvas"></canvas>
+  <div class="top-bar">
+    <span>SYS.GRID // ACTIVE</span>
+    <span id="clock">18:17:06</span>
+  </div>
 
-    <div class="top-bar">
-        <div class="top-status">
-            <div class="pulse-dot"></div>
-            <div id="sys-status-text">SYS.GRID // ACTIVE</div>
-        </div>
-        <div id="live-clock">00:00:00</div>
-    </div>
+  <div class="display-container">
+    <!-- Updated with character graphic asset -->
+    <img src="18915.webp" alt="Character Graphic" class="character-img">
+    <div class="label-text">F R O S T</div>
+  </div>
 
-    <!-- HOME VIEW -->
-    <div id="view-home" class="view-section active">
-        <div class="avatar-container">
-            <img id="active-avatar" class="avatar" src="" alt="Character Render">
-        </div>
-        <h1 class="title"><span id="title-part1"></span><span id="title-part2"></span></h1>
-        <div id="active-subtitle" class="subtitle"></div>
-    </div>
+  <div class="settings-menu">
+    <h2>CONFIG</h2>
+    <button onclick="toggleGrid()">TOGGLE GRID</button>
+    <button onclick="resetSystem()">RESET</button>
+  </div>
 
-    <!-- GAMES VIEW -->
-    <div id="view-games" class="view-section">
-        <div class="section-header">
-            <div class="section-title">games matrix</div>
-            <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
-        </div>
-        <div id="games-grid" class="grid-container">
-            <div class="grid-card"><h3>R6 Siege</h3><p>Tactical Ops</p></div>
-            <div class="grid-card"><h3>Minecraft</h3><p>Hardcore / Modded</p></div>
-            <div class="grid-card"><h3>Rocket League</h3><p>Supersonic Acrobatic</p></div>
-            <div class="grid-card"><h3>Cyber Grid</h3><p>Simulation</p></div>
-        </div>
-    </div>
+  <script>
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
 
-    <!-- APPS VIEW -->
-    <div id="view-apps" class="view-section">
-        <div class="section-header">
-            <div class="section-title">application tools</div>
-            <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
-        </div>
-        <div id="apps-grid" class="grid-container">
-            <div class="grid-card"><h3>Terminal</h3><p>System Shell</p></div>
-            <div class="grid-card"><h3>Notes</h3><p>Data Cache</p></div>
-            <div class="grid-card"><h3>Matrix Watcher</h3><p>Telemetry</p></div>
-            <div class="grid-card"><h3>Vault</h3><p>Secure Storage</p></div>
-        </div>
-    </div>
+    function toggleGrid() {
+      document.body.style.backgroundImage = document.body.style.backgroundImage === 'none' 
+        ? 'radial-gradient(var(--grid-dot) 1px, transparent 1px)' 
+        : 'none';
+    }
 
-    <!-- BROWSER VIEW -->
-    <div id="view-browser" class="view-section">
-        <div class="section-header">
-            <div class="section-title">gateway browser</div>
-            <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
-        </div>
-        <div style="font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-top: 20px;">
-            type query above and press enter to route externally
-        </div>
-    </div>
+    function resetSystem() {
+      location.reload();
+    }
+  </script>
 
-    <!-- FOOTER MENU -->
-    <div class="footer-bar">
-        <div class="menu-container">
-            <button class="menu-btn">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            </button>
-            <div class="dropdown-menu">
-                <button class="icon-link" title="Home" onclick="switchView('home')">
-                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                </button>
-                <button class="icon-link" title="Games" onclick="switchView('games')">
-                    <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-4c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-                </button>
-                <button class="icon-link" title="Apps" onclick="switchView('apps')">
-                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4H4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-                </button>
-                <button class="icon-link" title="Browser" onclick="switchView('browser')">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                </button>
-                <button class="icon-link" title="Settings" onclick="openSettingsModal()">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SETTINGS MODAL -->
-    <div id="settings-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">system configuration & parameters</h2>
-                <button class="close-btn" onclick="toggleModal(false)">&times;</button>
-            </div>
-            
-            <div class="modal-body-scroll">
-                <div class="setting-group">
-                    <div class="setting-label">Character Interface Protocol</div>
-                    <div class="character-select-grid" id="modal-char-grid">
-                        <button class="char-btn" onclick="stageTheme('subaru', this)">Subaru <span>[core]</span></button>
-                        <button class="char-btn" onclick="stageTheme('reinhard', this)">Reinhard <span>[sword]</span></button>
-                        <button class="char-btn" onclick="stageTheme('emilia', this)">Emilia <span>[frost]</span></button>
-                        <button class="char-btn" onclick="stageTheme('satella', this)">Satella <span>[envy]</span></button>
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-label">Gravity Blanket Grid Density</div>
-                    <div class="slider-container">
-                        <div class="slider-info">
-                            <span>Resolution Scale</span>
-                            <span id="grid-val">45px</span>
-                        </div>
-                        <input type="range" id="modal-slider" min="25" max="80" step="5" value="45" class="custom-slider" oninput="stageSpacing(this.value)">
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-label">Interface Animation & Physics</div>
-                    <div class="toggle-grid">
-                        <button class="toggle-btn" id="modal-toggle-gravity" onclick="stageToggle('gravity')">Grid Warp</button>
-                        <button class="toggle-btn" id="modal-toggle-float" onclick="stageToggle('float')">Avatar Float</button>
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-label">Security & Cloaking Protocol</div>
-                    <button class="action-btn" onclick="openAboutBlank()">
-                        <svg style="width:14px;height:14px;fill:var(--primary);" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                        Initialize about:blank Cloak
-                    </button>
-                </div>
-            </div>
-
-            <div class="modal-footer-actions">
-                <button class="btn-cancel" onclick="resetAllSettings()">Reset All</button>
-                <button class="btn-apply" onclick="applyChanges()">Apply Changes</button>
-                <button class="btn-cancel" onclick="toggleModal(false)">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const characters = {
-            subaru: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "core",
-                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
-                primary: "#00ff66",
-                secondary: "#ff6f00",
-                glow: "rgba(0, 255, 102, 0.3)",
-                cardBg: "rgba(5, 10, 5, 0.85)",
-                border: "rgba(0, 255, 102, 0.3)",
-                bg: "#030503",
-                textColor: "#ffffff"
-            },
-            reinhard: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "sword",
-                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ffd700",
-                secondary: "#00bfff",
-                glow: "rgba(255, 215, 0, 0.2)",
-                cardBg: "rgba(10, 10, 5, 0.85)",
-                border: "rgba(255, 215, 0, 0.3)",
-                bg: "#030503",
-                textColor: "#ffffff"
-            },
-            emilia: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "frost",
-                avatar: "https://static.wikia.nocookie.net/rezero/images/a/a8/Emilia_anime_season_3.png/revision/latest?cb=20240324141512",
-                primary: "#8a2be2",
-                secondary: "#9932cc",
-                glow: "rgba(138, 43, 226, 0.3)",
-                cardBg: "rgba(255, 255, 255, 0.95)",
-                border: "rgba(138, 43, 226, 0.3)",
-                bg: "#ffffff",
-                textColor: "#111111"
-            },
-            satella: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "envy",
-                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
-                primary: "#9932cc",
-                secondary: "#4b0082",
-                glow: "rgba(153, 50, 204, 0.25)",
-                cardBg: "rgba(10, 3, 15, 0.9)",
-                border: "rgba(153, 50, 204, 0.4)",
-                bg: "#030503",
-                textColor: "#ffffff"
-            }
-        };
-
-        // Active States (Live)
-        let activeTheme = localStorage.getItem('subaru_theme') || 'subaru';
-        let activeSpacing = parseInt(localStorage.getItem('subaru_spacing')) || 45;
-        let activeGravity = localStorage.getItem('subaru_gravity') !== 'false';
-        let activeFloat = localStorage.getItem('subaru_float') !== 'false';
-        let currentThemeColor = characters[activeTheme] ? characters[activeTheme].primary : "#00ff66";
-
-        // Staged States (Pending in Modal)
-        let stagedTheme = activeTheme;
-        let stagedSpacing = activeSpacing;
-        let stagedGravity = activeGravity;
-        let stagedFloat = activeFloat;
-
-        function initApp() {
-            const char = characters[activeTheme] || characters['subaru'];
-            document.getElementById('title-part1').innerText = char.namePart1;
-            document.getElementById('title-part2').innerText = char.namePart2;
-            document.getElementById('active-subtitle').innerText = char.subtitle;
-            document.getElementById('active-avatar').src = char.avatar;
-
-            document.body.style.backgroundColor = char.bg;
-            document.body.style.color = char.textColor;
-
-            const root = document.documentElement;
-            root.style.setProperty('--primary', char.primary);
-            root.style.setProperty('--secondary', char.secondary);
-            root.style.setProperty('--bg-glow', char.glow);
-            root.style.setProperty('--card-bg', char.cardBg);
-            root.style.setProperty('--border-color', char.border);
-            root.style.setProperty('--text-color', char.textColor);
-
-            currentThemeColor = char.primary;
-
-            const avatarContainer = document.querySelector('.avatar-container');
-            avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
-        }
-
-        function openSettingsModal() {
-            stagedTheme = activeTheme;
-            stagedSpacing = activeSpacing;
-            stagedGravity = activeGravity;
-            stagedFloat = activeFloat;
-
-            document.getElementById('modal-slider').value = stagedSpacing;
-            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
-
-            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.getAttribute('onclick').includes(stagedTheme)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            const gravBtn = document.getElementById('modal-toggle-gravity');
-            gravBtn.classList.toggle('active', stagedGravity);
-            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-
-            const floatBtn = document.getElementById('modal-toggle-float');
-            floatBtn.classList.toggle('active', stagedFloat);
-            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-
-            toggleModal(true);
-        }
-
-        function stageTheme(key, btnElement) {
-            stagedTheme = key;
-            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-        }
-
-        function stageSpacing(val) {
-            stagedSpacing = parseInt(val);
-            document.getElementById('grid-val').innerText = val + 'px';
-        }
-
-        function stageToggle(feature) {
-            if (feature === 'gravity') {
-                stagedGravity = !stagedGravity;
-                const btn = document.getElementById('modal-toggle-gravity');
-                btn.classList.toggle('active', stagedGravity);
-                btn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-            } else if (feature === 'float') {
-                stagedFloat = !stagedFloat;
-                const btn = document.getElementById('modal-toggle-float');
-                btn.classList.toggle('active', stagedFloat);
-                btn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-            }
-        }
-
-        function applyChanges() {
-            activeTheme = stagedTheme;
-            activeSpacing = stagedSpacing;
-            activeGravity = stagedGravity;
-            activeFloat = stagedFloat;
-
-            localStorage.setItem('subaru_theme', activeTheme);
-            localStorage.setItem('subaru_spacing', activeSpacing);
-            localStorage.setItem('subaru_gravity', activeGravity);
-            localStorage.setItem('subaru_float', activeFloat);
-
-            initApp();
-            toggleModal(false);
-        }
-
-        function resetAllSettings() {
-            localStorage.clear();
-            stagedTheme = 'subaru';
-            stagedSpacing = 45;
-            stagedGravity = true;
-            stagedFloat = true;
-
-            document.getElementById('modal-slider').value = stagedSpacing;
-            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
-
-            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.getAttribute('onclick').includes('subaru')) {
-                    btn.classList.add('active');
-                }
-            });
-
-            const gravBtn = document.getElementById('modal-toggle-gravity');
-            gravBtn.classList.add('active');
-            gravBtn.innerText = 'Grid Warp: ON';
-
-            const floatBtn = document.getElementById('modal-toggle-float');
-            floatBtn.classList.add('active');
-            floatBtn.innerText = 'Avatar Float: ON';
-
-            applyChanges();
-        }
-
-        function toggleModal(open) {
-            const modal = document.getElementById('settings-modal');
-            if (open) {
-                modal.classList.add('active');
-            } else {
-                modal.classList.remove('active');
-            }
-        }
-
-        function openAboutBlank() {
-            const win = window.open('about:blank');
-            if (!win) {
-                alert('Pop-up blocked! Please allow pop-ups for this site to use about:blank cloaking.');
-                return;
-            }
-            const doc = win.document;
-            doc.open();
-            doc.write(`
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <title>Dashboard</title>
-                    <style>
-                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
-                        iframe { width: 100%; height: 100%; border: none; }
-                    </style>
-                </head>
-                <body>
-                    <iframe src="${window.location.href}"></iframe>
-                </body>
-                </html>
-            `);
-            doc.close();
-        }
-
-        const canvas = document.getElementById('space-canvas');
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
-        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        window.addEventListener('mousemove', (e) => {
-            mouse.targetX = e.clientX;
-            mouse.targetY = e.clientY;
-        });
-
-        window.addEventListener('mouseleave', () => {
-            mouse.targetX = -1000;
-            mouse.targetY = -1000;
-        });
-
-        function updateMouse() {
-            mouse.x += (mouse.targetX - mouse.x) * 0.15;
-            mouse.y += (mouse.targetY - mouse.y) * 0.15;
-            requestAnimationFrame(updateMouse);
-        }
-        updateMouse();
-
-        function drawGrid() {
-            ctx.clearRect(0, 0, width, height);
-
-            const cols = Math.floor(width / activeSpacing) + 2;
-            const rows = Math.floor(height / activeSpacing) + 2;
-            const offsetX = (width % activeSpacing) / 2;
-            const offsetY = (height % activeSpacing) / 2;
-
-            for (let i = 0; i < cols; i++) {
-                for (let j = 0; j < rows; j++) {
-                    let x = i * activeSpacing + offsetX;
-                    let y = j * activeSpacing + offsetY;
-
-                    if (activeGravity) {
-                        let dx = mouse.x - x;
-                        let dy = mouse.y - y;
-                        let dist = Math.sqrt(dx * dx + dy * dy);
-                        let maxDist = 180;
-
-                        if (dist < maxDist && dist > 0) {
-                            let force = (1 - dist / maxDist);
-                            let angle = Math.atan2(dy, dx);
-                            x -= Math.cos(angle) * force * 25;
-                            y -= Math.sin(angle) * force * 25;
-                        }
-
-                        ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.25);
-                    } else {
-                        ctx.fillStyle = hexToRgba(currentThemeColor, 0.25);
-                    }
-
-                    ctx.fillRect(x - 1, y - 1, 2, 2);
-                }
-            }
-            requestAnimationFrame(drawGrid);
-        }
-        drawGrid();
-
-        function hexToRgba(hex, alpha) {
-            let c = hex.replace('#','');
-            if(c.length===3) c = c.split('').map(x => x+x).join('');
-            let num = parseInt(c,16);
-            return `rgba(${num>>16},${(num>>8)&255},${num&255},${alpha})`;
-        }
-
-        function switchView(viewName) {
-            const sections = document.querySelectorAll('.view-section');
-            sections.forEach(sec => sec.classList.remove('active'));
-            
-            setTimeout(() => {
-                const target = document.getElementById('view-' + viewName);
-                if (target) {
-                    target.classList.add('active');
-                }
-            }, 200);
-        }
-
-        function filterGrid(input, gridId) {
-            const query = input.value.toLowerCase();
-            const grid = document.getElementById(gridId);
-            const cards = grid.getElementsByClassName('grid-card');
-            
-            for (let card of cards) {
-                const title = card.querySelector('h3').innerText.toLowerCase();
-                const desc = card.querySelector('p').innerText.toLowerCase();
-                if (title.includes(query) || desc.includes(query)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            }
-        }
-
-        function handleBrowserSearch(event) {
-            if (event.key === 'Enter') {
-                const query = event.target.value;
-                if(query) {
-                    window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
-                }
-            }
-        }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Run setup on load
-        initApp();
-    </script>
 </body>
 </html>
