@@ -285,8 +285,8 @@
         .dropdown-menu {
             display: flex;
             position: absolute;
-            bottom: calc(100% + 5px);
-            left: 0;
+            bottom: calc(100% + 20px);
+            left: 50%;
             flex-direction: column;
             gap: 8px;
             background: rgba(3, 5, 3, 0.95);
@@ -296,15 +296,25 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px var(--bg-glow);
             backdrop-filter: blur(10px);
             opacity: 0;
-            transform: translateY(10px) scale(0.95);
+            transform: translate(-50%, 10px) scale(0.95);
             pointer-events: none;
             transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
             visibility: hidden;
         }
+        
+        .dropdown-menu::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 35px;
+            background: transparent;
+        }
 
         .menu-container:hover .dropdown-menu {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translate(-50%, 0) scale(1);
             pointer-events: auto;
             visibility: visible;
             transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
@@ -338,15 +348,15 @@
             transform: scale(1.05);
         }
 
-        /* Settings Modal Styles */
+        /* REBUILT CLEAN MODERN SETTINGS MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(14px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -361,20 +371,20 @@
         }
 
         .modal-content {
-            background: rgba(4, 8, 4, 0.96);
+            background: rgba(4, 8, 4, 0.98);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 18px;
             width: 92%;
-            max-width: 540px;
-            max-height: 85vh;
-            padding: 25px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.95), 0 0 40px var(--bg-glow);
+            max-width: 580px;
+            max-height: 88vh;
+            padding: 30px;
+            box-shadow: 0 40px 90px rgba(0,0,0,0.95), 0 0 50px var(--bg-glow);
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            transform: scale(0.95);
+            gap: 22px;
+            transform: scale(0.96);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
             color: #ffffff;
         }
 
@@ -386,26 +396,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 16px;
         }
 
         .modal-title {
-            font-size: 14px;
+            font-size: 13px;
             letter-spacing: 3px;
             color: var(--primary);
             margin: 0;
             text-transform: lowercase;
+            text-shadow: 0 0 10px var(--bg-glow);
         }
 
         .close-btn {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             color: var(--primary);
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -415,27 +426,45 @@
 
         .close-btn:hover {
             background: var(--bg-glow);
-            box-shadow: 0 0 10px var(--bg-glow);
+            box-shadow: 0 0 12px var(--bg-glow);
+            transform: scale(1.05);
         }
 
         .modal-body-scroll {
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding-right: 5px;
+            gap: 22px;
+            padding-right: 4px;
+        }
+
+        /* Custom Scrollbar for sleek look */
+        .modal-body-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-body-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+            border-radius: 3px;
+        }
+        .modal-body-scroll::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
         }
 
         .setting-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 14px;
         }
 
         .setting-label {
             font-size: 10px;
-            letter-spacing: 2.5px;
-            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.6);
             text-transform: uppercase;
             display: flex;
             align-items: center;
@@ -454,9 +483,9 @@
         }
 
         .char-btn {
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid var(--border-color);
-            padding: 12px 10px;
+            padding: 12px 14px;
             border-radius: 10px;
             color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
@@ -479,7 +508,7 @@
         .char-btn:hover {
             border-color: var(--primary);
             color: #fff;
-            background: rgba(0, 255, 102, 0.05);
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .char-btn.active {
@@ -495,7 +524,7 @@
         }
 
         .slider-container {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--border-color);
             padding: 12px 15px;
             border-radius: 10px;
@@ -508,13 +537,65 @@
             display: flex;
             justify-content: space-between;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .custom-slider {
             width: 100%;
             accent-color: var(--primary);
             cursor: pointer;
+        }
+
+        .physics-select-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 8px;
+        }
+
+        .physics-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 12px 14px;
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .physics-btn .phys-title {
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .physics-btn .phys-desc {
+            font-size: 9px;
+            opacity: 0.5;
+            letter-spacing: 0.5px;
+        }
+
+        .physics-btn:hover {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .physics-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            color: #fff;
+            box-shadow: 0 0 15px var(--bg-glow);
+        }
+        
+        .physics-btn.active .phys-title {
+            color: var(--primary);
         }
 
         .toggle-grid {
@@ -545,7 +626,7 @@
         }
 
         .action-btn {
-            background: var(--card-bg);
+            background: rgba(0,0,0,0.5);
             border: 1px solid var(--border-color);
             color: var(--primary);
             padding: 14px;
@@ -574,12 +655,12 @@
         .modal-footer-actions {
             display: flex;
             gap: 10px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 16px;
         }
 
         .btn-apply {
-            flex: 1;
+            flex: 1.5;
             background: var(--primary);
             color: #000;
             border: none;
@@ -595,20 +676,22 @@
 
         .btn-apply:hover {
             opacity: 0.9;
-            box-shadow: 0 0 15px var(--primary);
+            box-shadow: 0 0 18px var(--primary);
         }
 
         .btn-cancel {
+            flex: 1;
             background: rgba(0,0,0,0.5);
             color: #fff;
             border: 1px solid var(--border-color);
-            padding: 12px 20px;
+            padding: 12px;
             border-radius: 10px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .btn-cancel:hover {
@@ -641,28 +724,22 @@
     <!-- GAMES VIEW -->
     <div id="view-games" class="view-section">
         <div class="section-header">
-            <div class="section-title">games matrix</div>
+            <div class="section-title">games</div>
             <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
         </div>
         <div id="games-grid" class="grid-container">
-            <div class="grid-card"><h3>R6 Siege</h3><p>Tactical Ops</p></div>
-            <div class="grid-card"><h3>Minecraft</h3><p>Hardcore / Modded</p></div>
-            <div class="grid-card"><h3>Rocket League</h3><p>Supersonic Acrobatic</p></div>
-            <div class="grid-card"><h3>Cyber Grid</h3><p>Simulation</p></div>
+            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
     <!-- APPS VIEW -->
     <div id="view-apps" class="view-section">
         <div class="section-header">
-            <div class="section-title">application tools</div>
+            <div class="section-title">apps</div>
             <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
         </div>
         <div id="apps-grid" class="grid-container">
-            <div class="grid-card"><h3>Terminal</h3><p>System Shell</p></div>
-            <div class="grid-card"><h3>Notes</h3><p>Data Cache</p></div>
-            <div class="grid-card"><h3>Matrix Watcher</h3><p>Telemetry</p></div>
-            <div class="grid-card"><h3>Vault</h3><p>Secure Storage</p></div>
+            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
@@ -697,13 +774,13 @@
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                 </button>
                 <button class="icon-link" title="Settings" onclick="openSettingsModal()">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c-.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
+    <!-- CLEANED SETTINGS MODAL WITH NEW PHYSICS MODES -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -734,10 +811,32 @@
                 </div>
 
                 <div class="setting-group">
-                    <div class="setting-label">Interface Animation & Physics</div>
+                    <div class="setting-label">Interface Physics & Distortion Mode</div>
+                    <div class="physics-select-grid" id="modal-physics-grid">
+                        <button class="physics-btn" onclick="stagePhysics('warp', this)">
+                            <div class="phys-title">Standard Warp <span>[Smooth Pull]</span></div>
+                            <div class="phys-desc">Classic fluid gravitational pull towards cursor proximity.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('snap', this)">
+                            <div class="phys-title">Snap-Release Magnet <span>[Velocity Break]</span></div>
+                            <div class="phys-desc">Pulls grid points along with cursor movement; fast flicks break tension and lock nodes in place.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('vortex', this)">
+                            <div class="phys-title">Singularity Vortex <span>[Rotational Pull]</span></div>
+                            <div class="phys-desc">Swirls grid coordinates in a high-speed gravitational spin around the cursor.</div>
+                        </button>
+                        <button class="physics-btn" onclick="stagePhysics('repel', this)">
+                            <div class="phys-title">Quantum Repulsion <span>[Inverted Push]</span></div>
+                            <div class="phys-desc">Pushes space-time away from the cursor creating an open clearance bubble.</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <div class="setting-label">Visual & Animation Toggles</div>
                     <div class="toggle-grid">
-                        <button class="toggle-btn" id="modal-toggle-gravity" onclick="stageToggle('gravity')">Grid Warp</button>
-                        <button class="toggle-btn" id="modal-toggle-float" onclick="stageToggle('float')">Avatar Float</button>
+                        <button class="toggle-btn" id="modal-toggle-gravity" onclick="stageToggle('gravity')">Grid Warp: ON</button>
+                        <button class="toggle-btn" id="modal-toggle-float" onclick="stageToggle('float')">Avatar Float: ON</button>
                     </div>
                 </div>
 
@@ -778,12 +877,12 @@
                 namePart2: "",
                 subtitle: "sword",
                 avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ffd700",
-                secondary: "#00bfff",
-                glow: "rgba(255, 215, 0, 0.2)",
-                cardBg: "rgba(10, 10, 5, 0.85)",
-                border: "rgba(255, 215, 0, 0.3)",
-                bg: "#030503",
+                primary: "#ff2a2a",      /* Deep crimson red */
+                secondary: "#0055ff",    /* Dark navy blue */
+                glow: "rgba(255, 42, 42, 0.25)",
+                cardBg: "rgba(10, 5, 5, 0.85)",
+                border: "rgba(255, 42, 42, 0.3)",
+                bg: "#030305",
                 textColor: "#ffffff"
             },
             emilia: {
@@ -819,13 +918,8 @@
         let activeSpacing = parseInt(localStorage.getItem('subaru_spacing')) || 45;
         let activeGravity = localStorage.getItem('subaru_gravity') !== 'false';
         let activeFloat = localStorage.getItem('subaru_float') !== 'false';
+        let activePhysics = localStorage.getItem('subaru_physics') || 'warp';
         let currentThemeColor = characters[activeTheme] ? characters[activeTheme].primary : "#00ff66";
-
-        // Staged States (Pending in Modal)
-        let stagedTheme = activeTheme;
-        let stagedSpacing = activeSpacing;
-        let stagedGravity = activeGravity;
-        let stagedFloat = activeFloat;
 
         function initApp() {
             const char = characters[activeTheme] || characters['subaru'];
@@ -851,11 +945,19 @@
             avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
         }
 
+        // Staged States (Pending in Modal)
+        let stagedTheme = activeTheme;
+        let stagedSpacing = activeSpacing;
+        let stagedGravity = activeGravity;
+        let stagedFloat = activeFloat;
+        let stagedPhysics = activePhysics;
+
         function openSettingsModal() {
             stagedTheme = activeTheme;
             stagedSpacing = activeSpacing;
             stagedGravity = activeGravity;
             stagedFloat = activeFloat;
+            stagedPhysics = activePhysics;
 
             document.getElementById('modal-slider').value = stagedSpacing;
             document.getElementById('grid-val').innerText = stagedSpacing + 'px';
@@ -864,6 +966,14 @@
             buttons.forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.getAttribute('onclick').includes(stagedTheme)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(stagedPhysics)) {
                     btn.classList.add('active');
                 }
             });
@@ -882,6 +992,13 @@
         function stageTheme(key, btnElement) {
             stagedTheme = key;
             const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        function stagePhysics(mode, btnElement) {
+            stagedPhysics = mode;
+            const buttons = document.querySelectorAll('#modal-physics-grid .physics-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
         }
@@ -910,11 +1027,13 @@
             activeSpacing = stagedSpacing;
             activeGravity = stagedGravity;
             activeFloat = stagedFloat;
+            activePhysics = stagedPhysics;
 
             localStorage.setItem('subaru_theme', activeTheme);
             localStorage.setItem('subaru_spacing', activeSpacing);
             localStorage.setItem('subaru_gravity', activeGravity);
             localStorage.setItem('subaru_float', activeFloat);
+            localStorage.setItem('subaru_physics', activePhysics);
 
             initApp();
             toggleModal(false);
@@ -926,6 +1045,7 @@
             stagedSpacing = 45;
             stagedGravity = true;
             stagedFloat = true;
+            stagedPhysics = 'warp';
 
             document.getElementById('modal-slider').value = stagedSpacing;
             document.getElementById('grid-val').innerText = stagedSpacing + 'px';
@@ -934,6 +1054,14 @@
             buttons.forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.getAttribute('onclick').includes('subaru')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('warp')) {
                     btn.classList.add('active');
                 }
             });
@@ -988,7 +1116,9 @@
         const ctx = canvas.getContext('2d');
 
         let width, height;
-        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, speed: 0 };
+        let lastMouseX = -1000, lastMouseY = -1000;
+        let lockedNodes = new Map(); // For snap-release lock state
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -1000,16 +1130,25 @@
         window.addEventListener('mousemove', (e) => {
             mouse.targetX = e.clientX;
             mouse.targetY = e.clientY;
+            
+            let dx = e.clientX - lastMouseX;
+            let dy = e.clientY - lastMouseY;
+            mouse.speed = Math.sqrt(dx * dx + dy * dy);
+            
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
         });
 
         window.addEventListener('mouseleave', () => {
             mouse.targetX = -1000;
             mouse.targetY = -1000;
+            mouse.speed = 0;
         });
 
         function updateMouse() {
             mouse.x += (mouse.targetX - mouse.x) * 0.15;
             mouse.y += (mouse.targetY - mouse.y) * 0.15;
+            mouse.speed *= 0.9; // decay speed
             requestAnimationFrame(updateMouse);
         }
         updateMouse();
@@ -1024,20 +1163,54 @@
 
             for (let i = 0; i < cols; i++) {
                 for (let j = 0; j < rows; j++) {
-                    let x = i * activeSpacing + offsetX;
-                    let y = j * activeSpacing + offsetY;
+                    let originX = i * activeSpacing + offsetX;
+                    let originY = j * activeSpacing + offsetY;
+                    let x = originX;
+                    let y = originY;
+                    let nodeKey = `${i}_${j}`;
 
                     if (activeGravity) {
                         let dx = mouse.x - x;
                         let dy = mouse.y - y;
                         let dist = Math.sqrt(dx * dx + dy * dy);
-                        let maxDist = 180;
+                        let maxDist = 200;
 
                         if (dist < maxDist && dist > 0) {
                             let force = (1 - dist / maxDist);
                             let angle = Math.atan2(dy, dx);
-                            x -= Math.cos(angle) * force * 25;
-                            y -= Math.sin(angle) * force * 25;
+
+                            if (activePhysics === 'warp') {
+                                x -= Math.cos(angle) * force * 25;
+                                y -= Math.sin(angle) * force * 25;
+                            } 
+                            else if (activePhysics === 'snap') {
+                                // If mouse moves too fast (> 25px/frame), break tension and lock nodes in place temporarily
+                                if (mouse.speed > 25) {
+                                    lockedNodes.set(nodeKey, { x: x - Math.cos(angle) * force * 30, y: y - Math.sin(angle) * force * 30, time: Date.now() });
+                                }
+                                
+                                if (lockedNodes.has(nodeKey)) {
+                                    let lockData = lockedNodes.get(nodeKey);
+                                    x = lockData.x;
+                                    y = lockData.y;
+                                    // release lock after 800ms
+                                    if (Date.now() - lockData.time > 800) {
+                                        lockedNodes.delete(nodeKey);
+                                    }
+                                } else {
+                                    x -= Math.cos(angle) * force * 35;
+                                    y -= Math.sin(angle) * force * 35;
+                                }
+                            }
+                            else if (activePhysics === 'vortex') {
+                                let perpAngle = angle + Math.PI / 2;
+                                x -= Math.cos(angle) * force * 20 - Math.cos(perpAngle) * force * 30;
+                                y -= Math.sin(angle) * force * 20 - Math.sin(perpAngle) * force * 30;
+                            }
+                            else if (activePhysics === 'repel') {
+                                x += Math.cos(angle) * force * 30;
+                                y += Math.sin(angle) * force * 30;
+                            }
                         }
 
                         ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.25);
