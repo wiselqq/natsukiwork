@@ -627,10 +627,10 @@
     <!-- HOME VIEW -->
     <div id="view-home" class="view-section active">
         <div class="avatar-container">
-            <img id="active-avatar" class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Character Render">
+            <img id="active-avatar" class="avatar" src="" alt="Character Render">
         </div>
         <h1 class="title"><span id="title-part1"></span><span id="title-part2"></span></h1>
-        <div id="active-subtitle" class="subtitle">core</div>
+        <div id="active-subtitle" class="subtitle"></div>
     </div>
 
     <!-- GAMES VIEW -->
@@ -710,10 +710,10 @@
                 <div class="setting-group">
                     <div class="setting-label">Character Interface Protocol</div>
                     <div class="character-select-grid" id="modal-char-grid">
-                        <button class="char-btn" onclick="stageTheme('subaru', this)">Subaru <span>[CORE]</span></button>
-                        <button class="char-btn" onclick="stageTheme('reinhard', this)">Reinhard <span>[SWORD]</span></button>
-                        <button class="char-btn" onclick="stageTheme('emilia', this)">Emilia <span>[FROST]</span></button>
-                        <button class="char-btn" onclick="stageTheme('satella', this)">Satella <span>[ENVY]</span></button>
+                        <button class="char-btn" onclick="stageTheme('subaru', this)">Subaru <span>[core]</span></button>
+                        <button class="char-btn" onclick="stageTheme('reinhard', this)">Reinhard <span>[sword]</span></button>
+                        <button class="char-btn" onclick="stageTheme('emilia', this)">Emilia <span>[frost]</span></button>
+                        <button class="char-btn" onclick="stageTheme('satella', this)">Satella <span>[envy]</span></button>
                     </div>
                 </div>
 
@@ -785,11 +785,11 @@
                 namePart1: "",
                 namePart2: "",
                 subtitle: "frost",
-                avatar: "https://i.ibb.co/18915.webp" /* using user-provided emilia image reference */,
+                avatar: "https://i.ibb.co/18915.webp",
                 primary: "#8a2be2",
                 secondary: "#9932cc",
                 glow: "rgba(138, 43, 226, 0.3)",
-                cardBg: "rgba(240, 240, 245, 0.9)",
+                cardBg: "rgba(255, 255, 255, 0.95)",
                 border: "rgba(138, 43, 226, 0.3)",
                 bg: "#ffffff",
                 textColor: "#111111"
@@ -810,17 +810,41 @@
         };
 
         // Active States (Live)
-        let activeTheme = 'subaru';
-        let activeSpacing = 45;
-        let activeGravity = true;
-        let activeFloat = true;
-        let currentThemeColor = "#00ff66";
+        let activeTheme = localStorage.getItem('subaru_theme') || 'subaru';
+        let activeSpacing = parseInt(localStorage.getItem('subaru_spacing')) || 45;
+        let activeGravity = localStorage.getItem('subaru_gravity') !== 'false';
+        let activeFloat = localStorage.getItem('subaru_float') !== 'false';
+        let currentThemeColor = characters[activeTheme] ? characters[activeTheme].primary : "#00ff66";
 
         // Staged States (Pending in Modal)
-        let stagedTheme = 'subaru';
-        let stagedSpacing = 45;
-        let stagedGravity = true;
-        let stagedFloat = true;
+        let stagedTheme = activeTheme;
+        let stagedSpacing = activeSpacing;
+        let stagedGravity = activeGravity;
+        let stagedFloat = activeFloat;
+
+        function initApp() {
+            const char = characters[activeTheme] || characters['subaru'];
+            document.getElementById('title-part1').innerText = char.namePart1;
+            document.getElementById('title-part2').innerText = char.namePart2;
+            document.getElementById('active-subtitle').innerText = char.subtitle;
+            document.getElementById('active-avatar').src = char.avatar;
+
+            document.body.style.backgroundColor = char.bg;
+            document.body.style.color = char.textColor;
+
+            const root = document.documentElement;
+            root.style.setProperty('--primary', char.primary);
+            root.style.setProperty('--secondary', char.secondary);
+            root.style.setProperty('--bg-glow', char.glow);
+            root.style.setProperty('--card-bg', char.cardBg);
+            root.style.setProperty('--border-color', char.border);
+            root.style.setProperty('--text-color', char.textColor);
+
+            currentThemeColor = char.primary;
+
+            const avatarContainer = document.querySelector('.avatar-container');
+            avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
+        }
 
         function openSettingsModal() {
             stagedTheme = activeTheme;
@@ -882,34 +906,17 @@
             activeGravity = stagedGravity;
             activeFloat = stagedFloat;
 
-            const char = characters[activeTheme];
-            if (char) {
-                document.getElementById('title-part1').innerText = char.namePart1;
-                document.getElementById('title-part2').innerText = char.namePart2;
-                document.getElementById('active-subtitle').innerText = char.subtitle;
-                document.getElementById('active-avatar').src = char.avatar;
+            localStorage.setItem('subaru_theme', activeTheme);
+            localStorage.setItem('subaru_spacing', activeSpacing);
+            localStorage.setItem('subaru_gravity', activeGravity);
+            localStorage.setItem('subaru_float', activeFloat);
 
-                document.body.style.backgroundColor = char.bg;
-                document.body.style.color = char.textColor;
-
-                const root = document.documentElement;
-                root.style.setProperty('--primary', char.primary);
-                root.style.setProperty('--secondary', char.secondary);
-                root.style.setProperty('--bg-glow', char.glow);
-                root.style.setProperty('--card-bg', char.cardBg);
-                root.style.setProperty('--border-color', char.border);
-                root.style.setProperty('--text-color', char.textColor);
-
-                currentThemeColor = char.primary;
-            }
-
-            const avatarContainer = document.querySelector('.avatar-container');
-            avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
-
+            initApp();
             toggleModal(false);
         }
 
         function resetAllSettings() {
+            localStorage.clear();
             stagedTheme = 'subaru';
             stagedSpacing = 45;
             stagedGravity = true;
@@ -1090,6 +1097,9 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Run setup on load
+        initApp();
     </script>
 </body>
 </html>
