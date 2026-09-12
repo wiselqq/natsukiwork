@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subaru Hub // Core</title>
     <style>
+        :root {
+            --primary: #00ff66;
+            --secondary: #ff6f00;
+            --bg-glow: rgba(0, 255, 102, 0.15);
+            --card-bg: rgba(5, 10, 5, 0.85);
+            --border-color: rgba(0, 255, 102, 0.3);
+        }
+
         * {
             box-sizing: border-box;
             user-select: none;
@@ -23,9 +31,9 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
+            transition: background 0.5s ease;
         }
 
-        /* Interactive Canvas Background */
         #space-canvas {
             position: absolute;
             top: 0;
@@ -36,7 +44,7 @@
             pointer-events: none;
         }
 
-        .top-bar, .view-section, .footer-bar {
+        .top-bar, .view-section, .footer-bar, .modal-overlay {
             position: relative;
             z-index: 2;
         }
@@ -48,9 +56,10 @@
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: #00ff66;
+            color: var(--primary);
             letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
+            text-shadow: 0 0 10px var(--bg-glow);
+            transition: color 0.4s ease;
         }
 
         .top-status {
@@ -62,15 +71,16 @@
         .pulse-dot {
             width: 7px;
             height: 7px;
-            background-color: #00ff66;
+            background-color: var(--primary);
             border-radius: 50%;
-            box-shadow: 0 0 10px #00ff66;
+            box-shadow: 0 0 10px var(--primary);
             animation: pulse 2s infinite ease-in-out;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px #00ff66; }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px var(--primary); }
         }
 
         .view-section {
@@ -81,6 +91,7 @@
             flex-grow: 1;
             text-align: center;
             width: 100%;
+            max-width: 900px;
             padding: 20px;
             opacity: 0;
             transform: scale(0.95);
@@ -95,7 +106,7 @@
 
         .avatar-container {
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             animation: floatAnim 4s ease-in-out infinite;
         }
 
@@ -105,10 +116,11 @@
         }
 
         .avatar {
-            width: 140px;
+            width: 130px;
             height: auto;
-            filter: drop-shadow(0 0 25px rgba(0, 255, 102, 0.3)) drop-shadow(0 0 15px rgba(255, 111, 0, 0.3)); 
+            filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
             border-radius: 12px;
+            transition: filter 0.4s ease;
         }
 
         .title {
@@ -116,15 +128,17 @@
             font-weight: 300;
             letter-spacing: 14px;
             margin: 0;
-            color: #00ff66;
+            color: var(--primary);
             text-transform: lowercase;
             padding-left: 14px;
-            text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+            text-shadow: 0 0 15px var(--bg-glow);
+            transition: color 0.4s ease;
         }
 
         .title span {
-            color: #ff6f00;
-            text-shadow: 0 0 15px rgba(255, 111, 0, 0.4);
+            color: var(--secondary);
+            text-shadow: 0 0 15px var(--secondary);
+            transition: color 0.4s ease;
         }
 
         .subtitle {
@@ -135,20 +149,30 @@
             text-transform: uppercase;
         }
 
+        /* Section Layouts */
+        .section-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
         .section-title {
             font-size: 26px;
             letter-spacing: 8px;
-            color: #00ff66;
+            color: var(--primary);
             text-transform: lowercase;
-            margin-bottom: 25px;
-            text-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
+            margin-bottom: 15px;
+            text-shadow: 0 0 12px var(--bg-glow);
+            transition: color 0.4s ease;
         }
 
         .search-box {
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgba(0, 255, 102, 0.3);
+            border: 1px solid var(--border-color);
             padding: 14px 20px;
             border-radius: 14px;
             color: #ffffff;
@@ -156,16 +180,61 @@
             font-size: 13px;
             letter-spacing: 1.5px;
             outline: none;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .search-box:focus {
-            border-color: #00ff66;
-            box-shadow: 0 0 30px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(0, 255, 102, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--bg-glow), inset 0 0 10px var(--bg-glow);
             transform: translateY(-2px);
         }
 
+        /* Grid Containers for Games & Apps */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .grid-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--bg-glow);
+            transform: translateY(-4px);
+            background: rgba(10, 20, 10, 0.9);
+        }
+
+        .grid-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--primary);
+        }
+
+        .grid-card p {
+            margin: 0;
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Footer & Menu */
         .footer-bar {
             width: 100%;
             padding: 25px 40px;
@@ -180,8 +249,8 @@
         }
 
         .menu-btn {
-            background-color: rgba(0, 255, 102, 0.05);
-            border: 1px solid rgba(0, 255, 102, 0.3);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 14px;
             width: 48px;
             height: 48px;
@@ -189,22 +258,21 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 255, 102, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .menu-btn svg {
-            fill: #00ff66;
+            fill: var(--primary);
             width: 20px;
             height: 20px;
-            filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.5));
-            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 6px var(--bg-glow));
+            transition: transform 0.3s ease, fill 0.4s ease;
         }
 
         .menu-container:hover .menu-btn {
-            background-color: rgba(0, 255, 102, 0.18);
-            border-color: rgba(0, 255, 102, 0.8);
-            box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+            border-color: var(--primary);
+            box-shadow: 0 0 25px var(--bg-glow);
             transform: scale(1.08);
         }
 
@@ -219,11 +287,11 @@
             left: 0;
             flex-direction: column;
             gap: 8px;
-            background: rgba(3, 5, 3, 0.92);
-            border: 1px solid rgba(0, 255, 102, 0.3);
+            background: rgba(3, 5, 3, 0.95);
+            border: 1px solid var(--border-color);
             padding: 10px;
             border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 255, 102, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px var(--bg-glow);
             backdrop-filter: blur(10px);
             opacity: 0;
             transform: translateY(10px) scale(0.95);
@@ -254,34 +322,144 @@
         .icon-link svg {
             width: 18px;
             height: 18px;
+            fill: var(--primary);
+            transition: fill 0.4s ease;
         }
 
-        .icon-link.green {
-            color: #00ff66;
-        }
-        .icon-link.green svg {
-            fill: #00ff66;
-            filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.4));
-        }
-        .icon-link.green:hover {
-            background-color: rgba(0, 255, 102, 0.15);
-            border-color: rgba(0, 255, 102, 0.5);
-            box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
+        .icon-link:hover {
+            background-color: var(--bg-glow);
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--bg-glow);
             transform: scale(1.05);
         }
 
-        .icon-link.orange {
-            color: #ff6f00;
+        /* Modal Overlay for Settings */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
-        .icon-link.orange svg {
-            fill: #ff6f00;
-            filter: drop-shadow(0 0 5px rgba(255, 111, 0, 0.4));
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
-        .icon-link.orange:hover {
-            background-color: rgba(255, 111, 0, 0.15);
-            border-color: rgba(255, 111, 0, 0.5);
-            box-shadow: 0 0 12px rgba(255, 111, 0, 0.3);
-            transform: scale(1.05);
+
+        .modal-content {
+            background: #060a06;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px var(--bg-glow);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: var(--primary);
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .setting-label {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+        }
+
+        .character-select-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .char-btn {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .char-btn:hover, .char-btn.active {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            box-shadow: 0 0 10px var(--bg-glow);
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 15px var(--primary);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -293,7 +471,7 @@
     <div class="top-bar">
         <div class="top-status">
             <div class="pulse-dot"></div>
-            <div>SYS.GRID // ACTIVE</div>
+            <div id="sys-status-text">SYS.GRID // ACTIVE</div>
         </div>
         <div id="live-clock">00:00:00</div>
     </div>
@@ -301,30 +479,52 @@
     <!-- HOME VIEW -->
     <div id="view-home" class="view-section active">
         <div class="avatar-container">
-            <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
+            <img id="active-avatar" class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Character Render">
         </div>
-        <h1 class="title">subaru <span>hub</span></h1>
-        <div class="subtitle">spacetime curvature interface</div>
+        <h1 class="title"><span id="title-part1">subaru</span> <span id="title-part2">hub</span></h1>
+        <div id="active-subtitle" class="subtitle">spacetime curvature interface</div>
     </div>
 
     <!-- GAMES VIEW -->
     <div id="view-games" class="view-section">
-        <div class="section-title">games</div>
-        <input type="text" class="search-box" placeholder="search game matrix..." onkeyup="filterItems(this)">
+        <div class="section-header">
+            <div class="section-title">games matrix</div>
+            <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
+        </div>
+        <div id="games-grid" class="grid-container">
+            <div class="grid-card"><h3>R6 Siege</h3><p>Tactical Ops</p></div>
+            <div class="grid-card"><h3>Minecraft</h3><p>Hardcore / Modded</p></div>
+            <div class="grid-card"><h3>Rocket League</h3><p>Supersonic Acrobatic</p></div>
+            <div class="grid-card"><h3>Cyber Grid</h3><p>Simulation</p></div>
+        </div>
     </div>
 
     <!-- APPS VIEW -->
     <div id="view-apps" class="view-section">
-        <div class="section-title">apps</div>
-        <input type="text" class="search-box" placeholder="search application tools..." onkeyup="filterItems(this)">
+        <div class="section-header">
+            <div class="section-title">application tools</div>
+            <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
+        </div>
+        <div id="apps-grid" class="grid-container">
+            <div class="grid-card"><h3>Terminal</h3><p>System Shell</p></div>
+            <div class="grid-card"><h3>Notes</h3><p>Data Cache</p></div>
+            <div class="grid-card"><h3>Matrix Watcher</h3><p>Telemetry</p></div>
+            <div class="grid-card"><h3>Vault</h3><p>Secure Storage</p></div>
+        </div>
     </div>
 
     <!-- BROWSER VIEW -->
     <div id="view-browser" class="view-section">
-        <div class="section-title">browser</div>
-        <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
+        <div class="section-header">
+            <div class="section-title">gateway browser</div>
+            <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
+        </div>
+        <div style="font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-top: 20px;">
+            type query above and press enter to route externally
+        </div>
     </div>
 
+    <!-- FOOTER MENU -->
     <div class="footer-bar">
         <div class="menu-container">
             <button class="menu-btn">
@@ -332,33 +532,173 @@
             </button>
             <div class="dropdown-menu">
                 <!-- Home -->
-                <button class="icon-link green" title="Home" onclick="switchView('home')">
+                <button class="icon-link" title="Home" onclick="switchView('home')">
                     <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                 </button>
                 <!-- Games -->
-                <button class="icon-link orange" title="Games" onclick="switchView('games')">
+                <button class="icon-link" title="Games" onclick="switchView('games')">
                     <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-4c-.83 0-1.5-.67-1.5-1.5S17.67 8 18.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
                 </button>
                 <!-- Apps -->
-                <button class="icon-link green" title="Apps" onclick="switchView('apps')">
+                <button class="icon-link" title="Apps" onclick="switchView('apps')">
                     <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4H4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
                 </button>
                 <!-- Browser -->
-                <button class="icon-link orange" title="Browser" onclick="switchView('browser')">
+                <button class="icon-link" title="Browser" onclick="switchView('browser')">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </button>
+                <!-- Settings Modal Trigger -->
+                <button class="icon-link" title="Settings" onclick="toggleModal(true)">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">system settings</h2>
+                <button class="close-btn" onclick="toggleModal(false)">&times;</button>
+            </div>
+            
+            <div class="setting-group">
+                <div class="setting-label">Select Character Theme</div>
+                <div class="character-select-grid">
+                    <button class="char-btn active" onclick="setTheme('subaru')">Subaru Natsuki</button>
+                    <button class="char-btn" onclick="setTheme('reinhard')">Reinhard v. Astrea</button>
+                    <button class="char-btn" onclick="setTheme('emilia')">Emilia</button>
+                    <button class="char-btn" onclick="setTheme('satella')">Satella</button>
+                </div>
+            </div>
+
+            <div class="setting-group" style="margin-top: 10px;">
+                <div class="setting-label">Security Cloak</div>
+                <button class="action-btn" onclick="openAboutBlank()">Open in about:blank (Gatekeep)</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Character Profiles & Themes Data
+        const characters = {
+            subaru: {
+                namePart1: "subaru",
+                namePart2: "hub",
+                subtitle: "spacetime curvature interface",
+                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
+                primary: "#00ff66",
+                secondary: "#ff6f00",
+                glow: "rgba(0, 255, 102, 0.15)",
+                cardBg: "rgba(5, 10, 5, 0.85)",
+                border: "rgba(0, 255, 102, 0.3)"
+            },
+            reinhard: {
+                namePart1: "reinhard",
+                namePart2: "astrea",
+                subtitle: "sword saint interface",
+                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
+                primary: "#ffd700",
+                secondary: "#00bfff",
+                glow: "rgba(255, 215, 0, 0.2)",
+                cardBg: "rgba(10, 10, 5, 0.85)",
+                border: "rgba(255, 215, 0, 0.3)"
+            },
+            emilia: {
+                namePart1: "emilia",
+                namePart2: "spirit",
+                subtitle: "half-elf frost interface",
+                avatar: "https://www.pngfind.com/mpng/TRxhTxw_emilia-re-zero-characters-hd-png-download/",
+                primary: "#00ffff",
+                secondary: "#dda0dd",
+                glow: "rgba(0, 255, 255, 0.2)",
+                cardBg: "rgba(5, 10, 15, 0.85)",
+                border: "rgba(0, 255, 255, 0.3)"
+            },
+            satella: {
+                namePart1: "satella",
+                namePart2: "witch",
+                subtitle: "envy shadow interface",
+                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
+                primary: "#9932cc",
+                secondary: "#4b0082",
+                glow: "rgba(153, 50, 204, 0.25)",
+                cardBg: "rgba(10, 3, 15, 0.9)",
+                border: "rgba(153, 50, 204, 0.4)"
+            }
+        };
+
+        let currentThemeColor = "#00ff66";
+
+        function setTheme(key) {
+            const char = characters[key];
+            if (!char) return;
+
+            // Update UI text & images
+            document.getElementById('title-part1').innerText = char.namePart1;
+            document.getElementById('title-part2').innerText = char.namePart2;
+            document.getElementById('active-subtitle').innerText = char.subtitle;
+            document.getElementById('active-avatar').src = char.avatar;
+
+            // Update CSS variables
+            const root = document.documentElement;
+            root.style.setProperty('--primary', char.primary);
+            root.style.setProperty('--secondary', char.secondary);
+            root.style.setProperty('--bg-glow', char.glow);
+            root.style.setProperty('--card-bg', char.cardBg);
+            root.style.setProperty('--border-color', char.border);
+
+            currentThemeColor = char.primary;
+
+            // Update active state on buttons
+            document.querySelectorAll('.char-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toggleModal(open) {
+            const modal = document.getElementById('settings-modal');
+            if (open) {
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        // about:blank Cloak / Gatekeep execution
+        function openAboutBlank() {
+            const win = window.open('about:blank');
+            if (!win) {
+                alert('Pop-up blocked! Please allow pop-ups for this site to use about:blank cloaking.');
+                return;
+            }
+            const doc = win.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>Dashboard</title>
+                    <style>
+                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${window.location.href}"></iframe>
+                </body>
+                </html>
+            `);
+            doc.close();
+        }
+
         // Space-time Gravity Blanket Canvas Animation
         const canvas = document.getElementById('space-canvas');
         const ctx = canvas.getContext('2d');
 
         let width, height;
         let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
-        const spacing = 45; // Grid spacing
+        const spacing = 45;
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -377,7 +717,6 @@
             mouse.targetY = -1000;
         });
 
-        // Smooth mouse following
         function updateMouse() {
             mouse.x += (mouse.targetX - mouse.x) * 0.15;
             mouse.y += (mouse.targetY - mouse.y) * 0.15;
@@ -398,22 +737,19 @@
                     let x = i * spacing + offsetX;
                     let y = j * spacing + offsetY;
 
-                    // Calculate distance to mouse for gravity blanket push-in effect
                     let dx = mouse.x - x;
                     let dy = mouse.y - y;
                     let dist = Math.sqrt(dx * dx + dy * dy);
-                    let maxDist = 180; // Radius of the gravity well
+                    let maxDist = 180;
 
                     if (dist < maxDist && dist > 0) {
                         let force = (1 - dist / maxDist);
                         let angle = Math.atan2(dy, dx);
-                        // Push dots away to simulate weight depressing the rubber sheet/blanket
                         x -= Math.cos(angle) * force * 25;
                         y -= Math.sin(angle) * force * 25;
                     }
 
-                    // Draw individual node dot
-                    ctx.fillStyle = dist < maxDist ? 'rgba(0, 255, 102, 0.7)' : 'rgba(0, 255, 102, 0.2)';
+                    ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.2);
                     ctx.fillRect(x - 1, y - 1, 2, 2);
                 }
             }
@@ -421,7 +757,14 @@
         }
         drawGrid();
 
-        // View Switcher logic with smooth transition
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#','');
+            if(c.length===3) c = c.split('').map(x => x+x).join('');
+            let num = parseInt(c,16);
+            return `rgba(${num>>16},${(num>>8)&255},${num&255},${alpha})`;
+        }
+
+        // Switch views cleanly
         function switchView(viewName) {
             const sections = document.querySelectorAll('.view-section');
             sections.forEach(sec => sec.classList.remove('active'));
@@ -434,8 +777,21 @@
             }, 200);
         }
 
-        function filterItems(input) {
+        // Grid filter logic
+        function filterGrid(input, gridId) {
             const query = input.value.toLowerCase();
+            const grid = document.getElementById(gridId);
+            const cards = grid.getElementsByClassName('grid-card');
+            
+            for (let card of cards) {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
         }
 
         function handleBrowserSearch(event) {
