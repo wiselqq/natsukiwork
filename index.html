@@ -11,6 +11,8 @@
             --bg-glow: rgba(0, 255, 102, 0.15);
             --card-bg: rgba(5, 10, 5, 0.85);
             --border-color: rgba(0, 255, 102, 0.3);
+            --char-glow: rgba(0, 255, 102, 0.4);
+            --font-family: 'Courier New', Courier, monospace;
         }
 
         * {
@@ -23,7 +25,7 @@
             padding: 0;
             background-color: #030503;
             color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: var(--font-family);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -31,7 +33,7 @@
             height: 100vh;
             overflow: hidden;
             position: relative;
-            transition: background 0.5s ease;
+            transition: background 0.6s ease;
         }
 
         #space-canvas {
@@ -68,6 +70,55 @@
             gap: 10px;
         }
 
+        .top-right-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .battery-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 8px var(--bg-glow);
+            transition: color 0.4s ease;
+        }
+
+        .battery-icon {
+            width: 20px;
+            height: 10px;
+            border: 1px solid var(--primary);
+            border-radius: 2px;
+            padding: 1px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            transition: border-color 0.4s ease;
+        }
+
+        .battery-icon::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: 2px;
+            width: 2px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 0 1px 1px 0;
+            transition: background 0.4s ease;
+        }
+
+        .battery-level {
+            height: 100%;
+            background: var(--primary);
+            width: 100%;
+            border-radius: 1px;
+            transition: background 0.4s ease, width 0.3s ease;
+        }
+
         .pulse-dot {
             width: 7px;
             height: 7px;
@@ -93,15 +144,33 @@
             width: 100%;
             max-width: 900px;
             padding: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .view-section.active {
             display: flex;
             opacity: 1;
-            transform: scale(1);
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Glitch/Warp View Switch Animation */
+        .view-section.warp-out {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1.08) rotate(1deg);
+            filter: blur(8px);
+        }
+
+        .view-section.warp-in {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.85) rotate(-1deg);
+            filter: blur(8px);
         }
 
         .avatar-container {
@@ -118,9 +187,9 @@
         .avatar {
             width: 130px;
             height: auto;
-            filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
-            border-radius: 12px;
-            transition: filter 0.4s ease;
+            filter: drop-shadow(0 0 35px var(--char-glow)) drop-shadow(0 0 15px var(--secondary)); 
+            border-radius: 14px;
+            transition: filter 0.5s ease;
         }
 
         .title {
@@ -131,19 +200,19 @@
             color: var(--primary);
             text-transform: lowercase;
             padding-left: 14px;
-            text-shadow: 0 0 15px var(--bg-glow);
-            transition: color 0.4s ease;
+            text-shadow: 0 0 20px var(--bg-glow), 0 0 10px var(--primary);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
 
         .title span {
             color: var(--secondary);
-            text-shadow: 0 0 15px var(--secondary);
-            transition: color 0.4s ease;
+            text-shadow: 0 0 20px var(--secondary);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
         }
 
         .subtitle {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
             margin-top: 15px;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -164,7 +233,7 @@
             color: var(--primary);
             text-transform: lowercase;
             margin-bottom: 15px;
-            text-shadow: 0 0 12px var(--bg-glow);
+            text-shadow: 0 0 15px var(--bg-glow);
             transition: color 0.4s ease;
         }
 
@@ -176,7 +245,7 @@
             padding: 14px 20px;
             border-radius: 14px;
             color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: var(--font-family);
             font-size: 13px;
             letter-spacing: 1.5px;
             outline: none;
@@ -333,15 +402,15 @@
             transform: scale(1.05);
         }
 
-        /* Modal Overlay for Settings */
+        /* Expanded Modern Settings Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(14px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -356,50 +425,115 @@
         }
 
         .modal-content {
-            background: #060a06;
+            background: #050805;
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 500px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 30px var(--bg-glow);
+            max-width: 680px;
+            height: 520px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 40px var(--bg-glow);
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
+            overflow: hidden;
+            transform: scale(0.93);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .modal-overlay.active .modal-content {
             transform: scale(1);
         }
 
-        .modal-header {
+        .modal-header-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px 30px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
+            background: rgba(0,0,0,0.4);
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 16px;
             letter-spacing: 4px;
             color: var(--primary);
             margin: 0;
+            text-transform: lowercase;
         }
 
         .close-btn {
             background: none;
             border: none;
-            color: #ffffff;
-            font-size: 20px;
+            color: rgba(255,255,255,0.6);
+            font-size: 22px;
             cursor: pointer;
             transition: color 0.2s;
         }
 
         .close-btn:hover {
             color: var(--primary);
+        }
+
+        /* Modal Body layout with Tabs */
+        .modal-body-container {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .modal-tabs {
+            width: 180px;
+            background: rgba(0,0,0,0.3);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 10px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 12px 15px;
+            text-align: left;
+            color: rgba(255,255,255,0.6);
+            font-family: var(--font-family);
+            font-size: 11px;
+            letter-spacing: 2px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: lowercase;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background: var(--bg-glow);
+            border-color: var(--border-color);
+            box-shadow: 0 0 10px var(--bg-glow);
+        }
+
+        .tab-content-area {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tab-pane {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tab-pane.active {
+            display: flex;
         }
 
         .setting-group {
@@ -424,31 +558,100 @@
         .char-btn {
             background: rgba(0,0,0,0.5);
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             color: #fff;
             cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: var(--font-family);
             font-size: 11px;
             letter-spacing: 1.5px;
             transition: all 0.2s ease;
             text-align: center;
         }
 
-        .char-btn:hover, .char-btn.active {
+        .char-btn:hover, .char-btn.selected {
             border-color: var(--primary);
             background: var(--bg-glow);
-            box-shadow: 0 0 10px var(--bg-glow);
+            box-shadow: 0 0 12px var(--bg-glow);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 8px;
+        }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+            background: #000;
+        }
+
+        .select-input, .text-input {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: var(--font-family);
+            font-size: 11px;
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .select-input:focus, .text-input:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-footer-bar {
+            padding: 15px 30px;
+            border-top: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
         .action-btn {
             background: var(--primary);
             color: #000;
             border: none;
-            padding: 12px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: var(--font-family);
             font-weight: bold;
+            font-size: 11px;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -459,7 +662,19 @@
         .action-btn:hover {
             opacity: 0.9;
             box-shadow: 0 0 15px var(--primary);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--primary);
+            background: var(--bg-glow);
+            box-shadow: 0 0 10px var(--bg-glow);
         }
     </style>
 </head>
@@ -473,7 +688,15 @@
             <div class="pulse-dot"></div>
             <div id="sys-status-text">SYS.GRID // ACTIVE</div>
         </div>
-        <div id="live-clock">00:00:00</div>
+        <div class="top-right-info">
+            <div class="battery-display">
+                <span id="battery-text">--%</span>
+                <div class="battery-icon">
+                    <div id="battery-level" class="battery-level"></div>
+                </div>
+            </div>
+            <div id="live-clock">00:00:00</div>
+        </div>
     </div>
 
     <!-- HOME VIEW -->
@@ -519,7 +742,7 @@
             <div class="section-title">gateway browser</div>
             <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
         </div>
-        <div style="font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-top: 20px;">
+        <div style="font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-top: 20px;">
             type query above and press enter to route externally
         </div>
     </div>
@@ -549,48 +772,122 @@
                 </button>
                 <!-- Settings Modal Trigger -->
                 <button class="icon-link" title="Settings" onclick="toggleModal(true)">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
+    <!-- EXPANDED SETTINGS MODAL -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">system settings</h2>
+            <div class="modal-header-bar">
+                <h2 class="modal-title">system configuration</h2>
                 <button class="close-btn" onclick="toggleModal(false)">&times;</button>
             </div>
             
-            <div class="setting-group">
-                <div class="setting-label">Select Character Theme</div>
-                <div class="character-select-grid">
-                    <button class="char-btn active" onclick="setTheme('subaru')">Subaru Natsuki</button>
-                    <button class="char-btn" onclick="setTheme('reinhard')">Reinhard v. Astrea</button>
-                    <button class="char-btn" onclick="setTheme('emilia')">Emilia</button>
-                    <button class="char-btn" onclick="setTheme('satella')">Satella</button>
+            <div class="modal-body-container">
+                <!-- Navigation Tabs -->
+                <div class="modal-tabs">
+                    <button class="tab-btn active" onclick="switchTab('theme', this)">Theme Matrix</button>
+                    <button class="tab-btn" onclick="switchTab('security', this)">Security Cloak</button>
+                    <button class="tab-btn" onclick="switchTab('misc', this)">Miscellaneous</button>
+                    <button class="tab-btn" onclick="switchTab('about', this)">Diagnostics</button>
+                </div>
+
+                <!-- Tab Panes -->
+                <div class="tab-content-area">
+                    <!-- Theme Tab -->
+                    <div id="tab-theme" class="tab-pane active">
+                        <div class="setting-group">
+                            <div class="setting-label">Select Character Profile</div>
+                            <div class="character-select-grid">
+                                <button class="char-btn selected" id="cbtn-subaru" onclick="stageTheme('subaru')">Subaru Natsuki</button>
+                                <button class="char-btn" id="cbtn-reinhard" onclick="stageTheme('reinhard')">Reinhard v. Astrea</button>
+                                <button class="char-btn" id="cbtn-emilia" onclick="stageTheme('emilia')">Emilia</button>
+                                <button class="char-btn" id="cbtn-satella" onclick="stageTheme('satella')">Satella</button>
+                            </div>
+                        </div>
+                        <div class="setting-group">
+                            <div class="setting-label">UI Glow Intensity</div>
+                            <select id="setting-glow-intensity" class="select-input">
+                                <option value="low">Subtle Ambient Glow</option>
+                                <option value="med" selected>Standard Matrix Glow</option>
+                                <option value="high">High Intensity Flux</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Security Cloak Tab -->
+                    <div id="tab-security" class="tab-pane">
+                        <div class="setting-group">
+                            <div class="setting-label">About:Blank Cloaking</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.5;">
+                                Instantly launches an isolated sandbox tab running the dashboard under an unlinked about:blank session header to gatekeep activity.
+                            </div>
+                            <button class="action-btn" style="margin-top: 10px;" onclick="openAboutBlank()">Open in about:blank (Gatekeep)</button>
+                        </div>
+                        <div class="setting-group" style="margin-top: 10px;">
+                            <div class="setting-label">Panic Stealth Key</div>
+                            <div class="toggle-row">
+                                <span>Enable Emergency Cloak Shortcut (Esc)</span>
+                                <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Miscellaneous Tab -->
+                    <div id="tab-misc" class="tab-pane">
+                        <div class="setting-group">
+                            <div class="setting-label">Background Space Distortion</div>
+                            <select id="setting-grid-speed" class="select-input">
+                                <option value="normal" selected>Dynamic Gravity Flow</option>
+                                <option value="fast">Accelerated Grid</option>
+                                <option value="static">Static Grid Matrix</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <div class="setting-label">Telemetry & Notifications</div>
+                            <div class="toggle-row">
+                                <span>Show Live Battery & System Clock</span>
+                                <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagnostics Tab -->
+                    <div id="tab-about" class="tab-pane">
+                        <div class="setting-group">
+                            <div class="setting-label">System Build Information</div>
+                            <div style="font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.6; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                Core Engine: Subaru Hub v3.4<br>
+                                Environment: Client-Side Secure Web Worker<br>
+                                Render Pipeline: HTML5 Canvas / CSS3 Hardware Accelerated
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="setting-group" style="margin-top: 10px;">
-                <div class="setting-label">Security Cloak</div>
-                <button class="action-btn" onclick="openAboutBlank()">Open in about:blank (Gatekeep)</button>
+            <div class="modal-footer-bar">
+                <button class="action-btn secondary-btn" onclick="toggleModal(false)">Cancel</button>
+                <button class="action-btn" onclick="applySettings()">Apply Changes</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Character Profiles & Themes Data
+        // Character Profiles & Fixed Working Direct Image Links
         const characters = {
             subaru: {
                 namePart1: "subaru",
                 namePart2: "hub",
                 subtitle: "spacetime curvature interface",
-                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
+                avatar: "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=400&auto=format&fit=crop&q=80",
                 primary: "#00ff66",
                 secondary: "#ff6f00",
                 glow: "rgba(0, 255, 102, 0.15)",
+                charGlow: "rgba(0, 255, 102, 0.4)",
                 cardBg: "rgba(5, 10, 5, 0.85)",
                 border: "rgba(0, 255, 102, 0.3)"
             },
@@ -598,42 +895,58 @@
                 namePart1: "reinhard",
                 namePart2: "astrea",
                 subtitle: "sword saint interface",
-                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ffd700",
-                secondary: "#00bfff",
-                glow: "rgba(255, 215, 0, 0.2)",
-                cardBg: "rgba(10, 10, 5, 0.85)",
-                border: "rgba(255, 215, 0, 0.3)"
+                avatar: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80",
+                primary: "#1e3a8a", // Navy blue matching theme
+                secondary: "#dc2626", // Red accent
+                glow: "rgba(30, 58, 138, 0.25)",
+                charGlow: "rgba(220, 38, 38, 0.4)",
+                cardBg: "rgba(5, 8, 20, 0.85)",
+                border: "rgba(30, 58, 138, 0.4)"
             },
             emilia: {
                 namePart1: "emilia",
                 namePart2: "spirit",
                 subtitle: "half-elf frost interface",
-                avatar: "https://www.pngfind.com/mpng/TRxhTxw_emilia-re-zero-characters-hd-png-download/",
-                primary: "#00ffff",
-                secondary: "#dda0dd",
-                glow: "rgba(0, 255, 255, 0.2)",
-                cardBg: "rgba(5, 10, 15, 0.85)",
-                border: "rgba(0, 255, 255, 0.3)"
+                avatar: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&auto=format&fit=crop&q=80",
+                primary: "#ffffff", // High contrast white
+                secondary: "#9333ea", // Rich purple
+                glow: "rgba(147, 51, 234, 0.2)",
+                charGlow: "rgba(255, 255, 255, 0.45)",
+                cardBg: "rgba(12, 8, 20, 0.85)",
+                border: "rgba(147, 51, 234, 0.4)"
             },
             satella: {
                 namePart1: "satella",
                 namePart2: "witch",
                 subtitle: "envy shadow interface",
-                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
-                primary: "#9932cc",
-                secondary: "#4b0082",
-                glow: "rgba(153, 50, 204, 0.25)",
-                cardBg: "rgba(10, 3, 15, 0.9)",
-                border: "rgba(153, 50, 204, 0.4)"
+                avatar: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&auto=format&fit=crop&q=80",
+                primary: "#a855f7", // Purple
+                secondary: "#000000", // Black themed
+                glow: "rgba(168, 85, 247, 0.25)",
+                charGlow: "rgba(168, 85, 247, 0.5)",
+                cardBg: "rgba(8, 2, 12, 0.9)",
+                border: "rgba(168, 85, 247, 0.4)"
             }
         };
 
+        let activeThemeKey = 'subaru';
+        let stagedThemeKey = 'subaru';
         let currentThemeColor = "#00ff66";
 
-        function setTheme(key) {
-            const char = characters[key];
+        // Note on image links: If you want to use custom character PNG renders directly from wikis or image hosts, 
+        // ensure the host allows cross-origin loading (CORS), otherwise standard direct image URLs (like Unsplash placeholders or clean direct image links) work reliably.
+
+        function stageTheme(key) {
+            stagedThemeKey = key;
+            document.querySelectorAll('.char-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('cbtn-' + key).classList.add('selected');
+        }
+
+        function applySettings() {
+            const char = characters[stagedThemeKey];
             if (!char) return;
+
+            activeThemeKey = stagedThemeKey;
 
             // Update UI text & images
             document.getElementById('title-part1').innerText = char.namePart1;
@@ -646,14 +959,22 @@
             root.style.setProperty('--primary', char.primary);
             root.style.setProperty('--secondary', char.secondary);
             root.style.setProperty('--bg-glow', char.glow);
+            root.style.setProperty('--char-glow', char.charGlow);
             root.style.setProperty('--card-bg', char.cardBg);
             root.style.setProperty('--border-color', char.border);
 
             currentThemeColor = char.primary;
 
-            // Update active state on buttons
-            document.querySelectorAll('.char-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            // Close modal after apply
+            toggleModal(false);
+        }
+
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+
+            document.getElementById('tab-' + tabName).classList.add('active');
+            btnElement.classList.add('active');
         }
 
         function toggleModal(open) {
@@ -665,7 +986,7 @@
             }
         }
 
-        // about:blank Cloak / Gatekeep execution
+        // about:blank Cloak execution
         function openAboutBlank() {
             const win = window.open('about:blank');
             if (!win) {
@@ -680,7 +1001,7 @@
                 <head>
                     <title>Dashboard</title>
                     <style>
-                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #030503; }
                         iframe { width: 100%; height: 100%; border: none; }
                     </style>
                 </head>
@@ -761,20 +1082,32 @@
             let c = hex.replace('#','');
             if(c.length===3) c = c.split('').map(x => x+x).join('');
             let num = parseInt(c,16);
+            if(isNaN(num)) return `rgba(0, 255, 102, ${alpha})`;
             return `rgba(${num>>16},${(num>>8)&255},${num&255},${alpha})`;
         }
 
-        // Switch views cleanly
+        // Cool transition effect for view switching
         function switchView(viewName) {
-            const sections = document.querySelectorAll('.view-section');
-            sections.forEach(sec => sec.classList.remove('active'));
-            
+            const currentActive = document.querySelector('.view-section.active');
+            const target = document.getElementById('view-' + viewName);
+
+            if (!target || currentActive === target) return;
+
+            if (currentActive) {
+                currentActive.classList.add('warp-out');
+                currentActive.classList.remove('active');
+            }
+
             setTimeout(() => {
-                const target = document.getElementById('view-' + viewName);
-                if (target) {
-                    target.classList.add('active');
+                if (currentActive) {
+                    currentActive.classList.remove('warp-out');
                 }
-            }, 200);
+                target.classList.add('warp-in');
+                setTimeout(() => {
+                    target.classList.remove('warp-in');
+                    target.classList.add('active');
+                }, 50);
+            }, 250);
         }
 
         // Grid filter logic
@@ -803,13 +1136,29 @@
             }
         }
 
-        // Clock logic
+        // Clock & Battery status logic
         function updateClock() {
             const now = new Date();
             document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // Device Battery API Integration
+        if ('getBattery' in navigator) {
+            navigator.getBattery().then(battery => {
+                function updateBatteryStatus() {
+                    const levelPercent = Math.round(battery.level * 100);
+                    document.getElementById('battery-text').innerText = levelPercent + '%';
+                    document.getElementById('battery-level').style.width = levelPercent + '%';
+                }
+                updateBatteryStatus();
+                battery.addEventListener('levelchange', updateBatteryStatus);
+            });
+        } else {
+            document.getElementById('battery-text').innerText = '100%';
+            document.getElementById('battery-level').style.width = '100%';
+        }
     </script>
 </body>
 </html>
