@@ -3,56 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subaru Hub</title>
+    <title>Subaru Hub // Core</title>
     <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #000000;
+            background-color: #030503;
             color: #ffffff;
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             height: 100vh;
-            box-sizing: border-box;
             overflow: hidden;
-            
-            background-image: 
-                radial-gradient(circle, transparent 20%, #000000 20%, #000000 80%, transparent 80%, transparent),
-                radial-gradient(circle, transparent 20%, #000000 20%, #000000 80%, transparent 80%, transparent),
-                linear-gradient(#051a05 2px, transparent 2px),
-                linear-gradient(90deg, #051a05 2px, transparent 2px);
-            background-size: 30px 30px, 30px 30px, 30px 30px, 30px 30px;
-            background-position: 0 0, 15px 15px, 0 0, 0 0;
+            position: relative;
+        }
+
+        /* Interactive Canvas Background */
+        #space-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .top-bar, .view-section, .footer-bar {
+            position: relative;
+            z-index: 2;
         }
 
         .top-bar {
             width: 100%;
-            padding: 20px 30px;
+            padding: 25px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
             color: #00ff66;
-            letter-spacing: 1.5px;
-            box-sizing: border-box;
-            text-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
         }
 
         .top-status {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .pulse-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             background-color: #00ff66;
             border-radius: 50%;
-            box-shadow: 0 0 8px #00ff66;
+            box-shadow: 0 0 10px #00ff66;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px #00ff66; }
         }
 
         .view-section {
@@ -63,82 +81,97 @@
             flex-grow: 1;
             text-align: center;
             width: 100%;
-            box-sizing: border-box;
             padding: 20px;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .view-section.active {
             display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 25px;
+            animation: floatAnim 4s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .avatar {
-            width: 130px;
+            width: 140px;
             height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(0, 255, 102, 0.25)) drop-shadow(0 0 10px rgba(255, 111, 0, 0.25)); 
+            filter: drop-shadow(0 0 25px rgba(0, 255, 102, 0.3)) drop-shadow(0 0 15px rgba(255, 111, 0, 0.3)); 
+            border-radius: 12px;
         }
 
         .title {
-            font-size: 32px;
+            font-size: 38px;
             font-weight: 300;
-            letter-spacing: 10px;
+            letter-spacing: 14px;
             margin: 0;
             color: #00ff66;
             text-transform: lowercase;
-            padding-left: 10px;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+            padding-left: 14px;
+            text-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
         }
 
         .title span {
             color: #ff6f00;
-            text-shadow: 0 0 10px rgba(255, 111, 0, 0.3);
+            text-shadow: 0 0 15px rgba(255, 111, 0, 0.4);
         }
 
         .subtitle {
             font-size: 10px;
-            color: rgba(255, 255, 255, 0.35);
-            margin-top: 12px;
-            letter-spacing: 2.5px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 15px;
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
 
-        /* Section Header & Working Searchbar styles */
         .section-title {
-            font-size: 24px;
-            letter-spacing: 6px;
+            font-size: 26px;
+            letter-spacing: 8px;
             color: #00ff66;
             text-transform: lowercase;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+            margin-bottom: 25px;
+            text-shadow: 0 0 12px rgba(0, 255, 102, 0.4);
         }
 
         .search-box {
             width: 100%;
-            max-width: 400px;
-            background: rgba(0, 0, 0, 0.8);
+            max-width: 420px;
+            background: rgba(0, 0, 0, 0.85);
             border: 1px solid rgba(0, 255, 102, 0.3);
-            padding: 12px 18px;
-            border-radius: 12px;
+            padding: 14px 20px;
+            border-radius: 14px;
             color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
             font-size: 13px;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             outline: none;
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
-            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .search-box:focus {
             border-color: #00ff66;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(0, 255, 102, 0.2);
+            transform: translateY(-2px);
         }
 
         .footer-bar {
             width: 100%;
-            padding: 20px 30px;
+            padding: 25px 40px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            box-sizing: border-box;
         }
 
         .menu-container {
@@ -149,55 +182,67 @@
         .menu-btn {
             background-color: rgba(0, 255, 102, 0.05);
             border: 1px solid rgba(0, 255, 102, 0.3);
-            border-radius: 12px;
-            width: 44px;
-            height: 44px;
+            border-radius: 14px;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 255, 102, 0.15);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 20px rgba(0, 255, 102, 0.2);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .menu-btn svg {
             fill: #00ff66;
             width: 20px;
             height: 20px;
-            filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.4));
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            bottom: 56px;
-            left: 0;
-            flex-direction: column;
-            gap: 6px;
-            background: rgba(5, 5, 5, 0.95);
-            border: 1px solid rgba(0, 255, 102, 0.25);
-            padding: 8px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 255, 102, 0.15);
-            backdrop-filter: blur(8px);
-        }
-
-        .menu-container:hover .dropdown-menu {
-            display: flex;
+            filter: drop-shadow(0 0 6px rgba(0, 255, 102, 0.5));
+            transition: transform 0.3s ease;
         }
 
         .menu-container:hover .menu-btn {
-            background-color: rgba(0, 255, 102, 0.15);
-            border-color: rgba(0, 255, 102, 0.6);
-            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+            background-color: rgba(0, 255, 102, 0.18);
+            border-color: rgba(0, 255, 102, 0.8);
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.4);
+            transform: scale(1.08);
+        }
+
+        .menu-container:hover .menu-btn svg {
+            transform: rotate(90deg);
+        }
+
+        .dropdown-menu {
+            display: flex;
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(3, 5, 3, 0.92);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            padding: 10px;
+            border-radius: 14px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px rgba(0, 255, 102, 0.2);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .menu-container:hover .dropdown-menu {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
 
         .icon-link {
             background: transparent;
             border: 1px solid transparent;
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -216,12 +261,13 @@
         }
         .icon-link.green svg {
             fill: #00ff66;
-            filter: drop-shadow(0 0 4px rgba(0, 255, 102, 0.3));
+            filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.4));
         }
         .icon-link.green:hover {
-            background-color: rgba(0, 255, 102, 0.12);
-            border-color: rgba(0, 255, 102, 0.4);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+            background-color: rgba(0, 255, 102, 0.15);
+            border-color: rgba(0, 255, 102, 0.5);
+            box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
+            transform: scale(1.05);
         }
 
         .icon-link.orange {
@@ -229,48 +275,54 @@
         }
         .icon-link.orange svg {
             fill: #ff6f00;
-            filter: drop-shadow(0 0 4px rgba(255, 111, 0, 0.3));
+            filter: drop-shadow(0 0 5px rgba(255, 111, 0, 0.4));
         }
         .icon-link.orange:hover {
-            background-color: rgba(255, 111, 0, 0.12);
-            border-color: rgba(255, 111, 0, 0.4);
-            box-shadow: 0 0 10px rgba(255, 111, 0, 0.2);
+            background-color: rgba(255, 111, 0, 0.15);
+            border-color: rgba(255, 111, 0, 0.5);
+            box-shadow: 0 0 12px rgba(255, 111, 0, 0.3);
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
 
+    <!-- Space-time Gravity Blanket Canvas -->
+    <canvas id="space-canvas"></canvas>
+
     <div class="top-bar">
         <div class="top-status">
             <div class="pulse-dot"></div>
-            <div>SYS.ONLINE</div>
+            <div>SYS.GRID // ACTIVE</div>
         </div>
         <div id="live-clock">00:00:00</div>
     </div>
 
     <!-- HOME VIEW -->
     <div id="view-home" class="view-section active">
-        <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
+        <div class="avatar-container">
+            <img class="avatar" src="https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)" alt="Subaru Natsuki">
+        </div>
         <h1 class="title">subaru <span>hub</span></h1>
-        <div class="subtitle">terminal access interface</div>
+        <div class="subtitle">spacetime curvature interface</div>
     </div>
 
     <!-- GAMES VIEW -->
     <div id="view-games" class="view-section">
         <div class="section-title">games</div>
-        <input type="text" class="search-box" placeholder="search games..." onkeyup="filterItems(this)">
+        <input type="text" class="search-box" placeholder="search game matrix..." onkeyup="filterItems(this)">
     </div>
 
     <!-- APPS VIEW -->
     <div id="view-apps" class="view-section">
         <div class="section-title">apps</div>
-        <input type="text" class="search-box" placeholder="search apps..." onkeyup="filterItems(this)">
+        <input type="text" class="search-box" placeholder="search application tools..." onkeyup="filterItems(this)">
     </div>
 
     <!-- BROWSER VIEW -->
     <div id="view-browser" class="view-section">
         <div class="section-title">browser</div>
-        <input type="text" class="search-box" placeholder="enter url or search..." onkeypress="handleBrowserSearch(event)">
+        <input type="text" class="search-box" placeholder="enter destination URL or query..." onkeypress="handleBrowserSearch(event)">
     </div>
 
     <div class="footer-bar">
@@ -289,7 +341,7 @@
                 </button>
                 <!-- Apps -->
                 <button class="icon-link green" title="Apps" onclick="switchView('apps')">
-                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4H4v4zm-6 4h4V4H4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
                 </button>
                 <!-- Browser -->
                 <button class="icon-link orange" title="Browser" onclick="switchView('browser')">
@@ -300,24 +352,92 @@
     </div>
 
     <script>
-        // Switch views cleanly without reloading the page
+        // Space-time Gravity Blanket Canvas Animation
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000 };
+        const spacing = 45; // Grid spacing
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.targetX = -1000;
+            mouse.targetY = -1000;
+        });
+
+        // Smooth mouse following
+        function updateMouse() {
+            mouse.x += (mouse.targetX - mouse.x) * 0.15;
+            mouse.y += (mouse.targetY - mouse.y) * 0.15;
+            requestAnimationFrame(updateMouse);
+        }
+        updateMouse();
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            const cols = Math.floor(width / spacing) + 2;
+            const rows = Math.floor(height / spacing) + 2;
+            const offsetX = (width % spacing) / 2;
+            const offsetY = (height % spacing) / 2;
+
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    let x = i * spacing + offsetX;
+                    let y = j * spacing + offsetY;
+
+                    // Calculate distance to mouse for gravity blanket push-in effect
+                    let dx = mouse.x - x;
+                    let dy = mouse.y - y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    let maxDist = 180; // Radius of the gravity well
+
+                    if (dist < maxDist && dist > 0) {
+                        let force = (1 - dist / maxDist);
+                        let angle = Math.atan2(dy, dx);
+                        // Push dots away to simulate weight depressing the rubber sheet/blanket
+                        x -= Math.cos(angle) * force * 25;
+                        y -= Math.sin(angle) * force * 25;
+                    }
+
+                    // Draw individual node dot
+                    ctx.fillStyle = dist < maxDist ? 'rgba(0, 255, 102, 0.7)' : 'rgba(0, 255, 102, 0.2)';
+                    ctx.fillRect(x - 1, y - 1, 2, 2);
+                }
+            }
+            requestAnimationFrame(drawGrid);
+        }
+        drawGrid();
+
+        // View Switcher logic with smooth transition
         function switchView(viewName) {
             const sections = document.querySelectorAll('.view-section');
             sections.forEach(sec => sec.classList.remove('active'));
             
-            const target = document.getElementById('view-' + viewName);
-            if (target) {
-                target.classList.add('active');
-            }
+            setTimeout(() => {
+                const target = document.getElementById('view-' + viewName);
+                if (target) {
+                    target.classList.add('active');
+                }
+            }, 200);
         }
 
-        // Placeholder filter logic for future games/apps elements
         function filterItems(input) {
             const query = input.value.toLowerCase();
-            // Ready for your custom elements insertion
         }
 
-        // Quick browser search input behavior
         function handleBrowserSearch(event) {
             if (event.key === 'Enter') {
                 const query = event.target.value;
