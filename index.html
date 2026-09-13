@@ -107,7 +107,7 @@
 
         .avatar-container {
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             animation: floatAnim 4s ease-in-out infinite;
         }
 
@@ -117,11 +117,14 @@
         }
 
         .avatar {
-            width: 260px; /* Scaled up for better visibility */
-            height: auto;
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            object-position: center top;
             filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
-            border-radius: 12px;
-            transition: filter 0.4s ease;
+            border-radius: 16px;
+            border: 2px solid var(--border-color);
+            transition: filter 0.4s ease, width 0.3s ease, height 0.3s ease;
         }
 
         .title {
@@ -143,7 +146,7 @@
         }
 
         .subtitle {
-            font-size: 16px; /* Increased font size for text below character */
+            font-size: 11px;
             color: var(--primary);
             margin-top: 15px;
             letter-spacing: 4px;
@@ -699,7 +702,6 @@
 </head>
 <body>
 
-    <!-- Space-time Gravity Blanket Canvas -->
     <canvas id="space-canvas"></canvas>
 
     <div class="top-bar">
@@ -726,7 +728,6 @@
             <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
         </div>
         <div id="games-grid" class="grid-container">
-            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
@@ -737,7 +738,6 @@
             <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
         </div>
         <div id="apps-grid" class="grid-container">
-            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
@@ -858,58 +858,91 @@
     <script>
         const characters = {
             subaru: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "core",
-                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
+                name: "subaru",
+                titlePart1: "subaru",
+                titlePart2: "natsuki",
+                subtitle: "Return by Death // Authority of Pride",
                 primary: "#00ff66",
                 secondary: "#ff6f00",
-                glow: "rgba(0, 255, 102, 0.3)",
-                cardBg: "rgba(5, 10, 5, 0.85)",
-                border: "rgba(0, 255, 102, 0.3)",
-                bg: "#030503",
-                textColor: "#ffffff"
+                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
             },
             reinhard: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "sword",
-                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ff2a2a",  
-                secondary: "#0055ff",   
-                glow: "rgba(255, 42, 42, 0.25)",
-                cardBg: "rgba(10, 5, 5, 0.85)",
-                border: "rgba(255, 42, 42, 0.3)",
-                bg: "#030305",
-                textColor: "#ffffff"
+                name: "reinhard",
+                titlePart1: "reinhard",
+                titlePart2: "astrea",
+                subtitle: "Sword Saint // Divine Protections",
+                primary: "#00ccff",
+                secondary: "#ffff00",
+                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80"
             },
             emilia: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "frost",
-                avatar: "https://static.wikia.nocookie.net/rezero/images/5/59/Emilia_Season_1_Character_Design.png",
-                primary: "#8a2be2",
-                secondary: "#9932cc",
-                glow: "rgba(138, 43, 226, 0.3)",
-                cardBg: "rgba(255, 255, 255, 0.95)",
-                border: "rgba(138, 43, 226, 0.3)",
-                bg: "#ffffff",
-                textColor: "#111111"
+                name: "emilia",
+                titlePart1: "emilia",
+                titlePart2: "tan",
+                subtitle: "Half-Elf Candidate // Puck Contract",
+                primary: "#ff66cc",
+                secondary: "#00ffff",
+                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"
             },
             satella: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "envy",
-                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
-                primary: "#9932cc",
-                secondary: "#4b0082",
-                glow: "rgba(153, 50, 204, 0.25)",
-                cardBg: "rgba(10, 3, 15, 0.9)",
-                border: "rgba(153, 50, 204, 0.4)",
-                bg: "#05010a",
-                textColor: "#ffffff"
+                name: "satella",
+                titlePart1: "satella",
+                titlePart2: "",
+                subtitle: "Witch of Envy // Shadow Domain",
+                primary: "#9900ff",
+                secondary: "#ff0066",
+                avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
             }
         };
+
+        let currentTheme = 'subaru';
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById('view-' + viewId);
+            if (target) target.classList.add('active');
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('settings-modal');
+            if (show) modal.classList.add('active');
+            else modal.classList.remove('active');
+        }
+
+        function stageTheme(themeKey) {
+            currentTheme = themeKey;
+            const data = characters[themeKey];
+            if (!data) return;
+
+            document.getElementById('active-avatar').src = data.avatar;
+            document.getElementById('title-part1').textContent = data.titlePart1;
+            document.getElementById('title-part2').textContent = data.titlePart2;
+            document.getElementById('active-subtitle').textContent = data.subtitle;
+
+            document.documentElement.style.setProperty('--primary', data.primary);
+            document.documentElement.style.setProperty('--secondary', data.secondary);
+            document.documentElement.style.setProperty('--bg-glow', data.primary + '4D');
+            document.documentElement.style.setProperty('--border-color', data.primary + '4D');
+        }
+
+        function stageSpacing(val) {
+            document.getElementById('grid-val').textContent = val + 'px';
+        }
+
+        function stagePhysics() {}
+        function stageToggle() {}
+        function openAboutBlank() {}
+        function resetAllSettings() {}
+        function applyChanges() { toggleModal(false); }
+        function filterGrid() {}
+        function handleBrowserSearch() {}
+
+        // Initialize default theme
+        stageTheme('subaru');
     </script>
 </body>
 </html>
