@@ -117,14 +117,11 @@
         }
 
         .avatar {
-            width: 220px;
-            height: 220px;
-            object-fit: cover;
-            object-position: center top;
+            width: 130px;
+            height: auto;
             filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
-            border-radius: 16px;
-            border: 2px solid var(--border-color);
-            transition: filter 0.4s ease, width 0.3s ease, height 0.3s ease;
+            border-radius: 12px;
+            transition: filter 0.4s ease;
         }
 
         .title {
@@ -351,6 +348,7 @@
             transform: scale(1.05);
         }
 
+        /* REBUILT CLEAN MODERN SETTINGS MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -440,6 +438,7 @@
             padding-right: 4px;
         }
 
+        /* Custom Scrollbar for sleek look */
         .modal-body-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -702,6 +701,7 @@
 </head>
 <body>
 
+    <!-- Space-time Gravity Blanket Canvas -->
     <canvas id="space-canvas"></canvas>
 
     <div class="top-bar">
@@ -728,6 +728,7 @@
             <input type="text" class="search-box" placeholder="search game nodes..." onkeyup="filterGrid(this, 'games-grid')">
         </div>
         <div id="games-grid" class="grid-container">
+            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
@@ -738,6 +739,7 @@
             <input type="text" class="search-box" placeholder="search tool database..." onkeyup="filterGrid(this, 'apps-grid')">
         </div>
         <div id="apps-grid" class="grid-container">
+            <!-- Items cleared for manual addition -->
         </div>
     </div>
 
@@ -778,7 +780,7 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
+    <!-- CLEANED SETTINGS MODAL WITH NEW PHYSICS MODES -->
     <div id="settings-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -858,91 +860,424 @@
     <script>
         const characters = {
             subaru: {
-                name: "subaru",
-                titlePart1: "subaru",
-                titlePart2: "natsuki",
-                subtitle: "Return by Death // Authority of Pride",
+                namePart1: "",
+                namePart2: "",
+                subtitle: "core",
+                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
                 primary: "#00ff66",
                 secondary: "#ff6f00",
-                avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
+                glow: "rgba(0, 255, 102, 0.3)",
+                cardBg: "rgba(5, 10, 5, 0.85)",
+                border: "rgba(0, 255, 102, 0.3)",
+                bg: "#030503",
+                textColor: "#ffffff"
             },
             reinhard: {
-                name: "reinhard",
-                titlePart1: "reinhard",
-                titlePart2: "astrea",
-                subtitle: "Sword Saint // Divine Protections",
-                primary: "#00ccff",
-                secondary: "#ffff00",
-                avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80"
+                namePart1: "",
+                namePart2: "",
+                subtitle: "sword",
+                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
+                primary: "#ff2a2a",      /* Deep crimson red */
+                secondary: "#0055ff",    /* Dark navy blue */
+                glow: "rgba(255, 42, 42, 0.25)",
+                cardBg: "rgba(10, 5, 5, 0.85)",
+                border: "rgba(255, 42, 42, 0.3)",
+                bg: "#030305",
+                textColor: "#ffffff"
             },
             emilia: {
-                name: "emilia",
-                titlePart1: "emilia",
-                titlePart2: "tan",
-                subtitle: "Half-Elf Candidate // Puck Contract",
-                primary: "#ff66cc",
-                secondary: "#00ffff",
-                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80"
+                namePart1: "",
+                namePart2: "",
+                subtitle: "frost",
+                avatar: "https://static.wikia.nocookie.net/rezero/images/5/59/Emilia_Season_1_Character_Design.png",
+                primary: "#8a2be2",
+                secondary: "#9932cc",
+                glow: "rgba(138, 43, 226, 0.3)",
+                cardBg: "rgba(255, 255, 255, 0.95)",
+                border: "rgba(138, 43, 226, 0.3)",
+                bg: "#ffffff",
+                textColor: "#111111"
             },
             satella: {
-                name: "satella",
-                titlePart1: "satella",
-                titlePart2: "",
-                subtitle: "Witch of Envy // Shadow Domain",
-                primary: "#9900ff",
-                secondary: "#ff0066",
-                avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80"
+                namePart1: "",
+                namePart2: "",
+                subtitle: "envy",
+                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
+                primary: "#9932cc",
+                secondary: "#4b0082",
+                glow: "rgba(153, 50, 204, 0.25)",
+                cardBg: "rgba(10, 3, 15, 0.9)",
+                border: "rgba(153, 50, 204, 0.4)",
+                bg: "#030503",
+                textColor: "#ffffff"
             }
         };
 
-        let currentTheme = 'subaru';
+        // Active States (Live)
+        let activeTheme = localStorage.getItem('subaru_theme') || 'subaru';
+        let activeSpacing = parseInt(localStorage.getItem('subaru_spacing')) || 45;
+        let activeGravity = localStorage.getItem('subaru_gravity') !== 'false';
+        let activeFloat = localStorage.getItem('subaru_float') !== 'false';
+        let activePhysics = localStorage.getItem('subaru_physics') || 'warp';
+        let currentThemeColor = characters[activeTheme] ? characters[activeTheme].primary : "#00ff66";
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-            const target = document.getElementById('view-' + viewId);
-            if (target) target.classList.add('active');
+        function initApp() {
+            const char = characters[activeTheme] || characters['subaru'];
+            document.getElementById('title-part1').innerText = char.namePart1;
+            document.getElementById('title-part2').innerText = char.namePart2;
+            document.getElementById('active-subtitle').innerText = char.subtitle;
+            document.getElementById('active-avatar').src = char.avatar;
+
+            document.body.style.backgroundColor = char.bg;
+            document.body.style.color = char.textColor;
+
+            const root = document.documentElement;
+            root.style.setProperty('--primary', char.primary);
+            root.style.setProperty('--secondary', char.secondary);
+            root.style.setProperty('--bg-glow', char.glow);
+            root.style.setProperty('--card-bg', char.cardBg);
+            root.style.setProperty('--border-color', char.border);
+            root.style.setProperty('--text-color', char.textColor);
+
+            currentThemeColor = char.primary;
+
+            const avatarContainer = document.querySelector('.avatar-container');
+            avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
         }
+
+        // Staged States (Pending in Modal)
+        let stagedTheme = activeTheme;
+        let stagedSpacing = activeSpacing;
+        let stagedGravity = activeGravity;
+        let stagedFloat = activeFloat;
+        let stagedPhysics = activePhysics;
 
         function openSettingsModal() {
-            document.getElementById('settings-modal').classList.add('active');
+            stagedTheme = activeTheme;
+            stagedSpacing = activeSpacing;
+            stagedGravity = activeGravity;
+            stagedFloat = activeFloat;
+            stagedPhysics = activePhysics;
+
+            document.getElementById('modal-slider').value = stagedSpacing;
+            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
+
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(stagedTheme)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(stagedPhysics)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.classList.toggle('active', stagedGravity);
+            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
+
+            const floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.classList.toggle('active', stagedFloat);
+            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
+
+            toggleModal(true);
         }
 
-        function toggleModal(show) {
-            const modal = document.getElementById('settings-modal');
-            if (show) modal.classList.add('active');
-            else modal.classList.remove('active');
+        function stageTheme(key, btnElement) {
+            stagedTheme = key;
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
         }
 
-        function stageTheme(themeKey) {
-            currentTheme = themeKey;
-            const data = characters[themeKey];
-            if (!data) return;
-
-            document.getElementById('active-avatar').src = data.avatar;
-            document.getElementById('title-part1').textContent = data.titlePart1;
-            document.getElementById('title-part2').textContent = data.titlePart2;
-            document.getElementById('active-subtitle').textContent = data.subtitle;
-
-            document.documentElement.style.setProperty('--primary', data.primary);
-            document.documentElement.style.setProperty('--secondary', data.secondary);
-            document.documentElement.style.setProperty('--bg-glow', data.primary + '4D');
-            document.documentElement.style.setProperty('--border-color', data.primary + '4D');
+        function stagePhysics(mode, btnElement) {
+            stagedPhysics = mode;
+            const buttons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
         }
 
         function stageSpacing(val) {
-            document.getElementById('grid-val').textContent = val + 'px';
+            stagedSpacing = parseInt(val);
+            document.getElementById('grid-val').innerText = val + 'px';
         }
 
-        function stagePhysics() {}
-        function stageToggle() {}
-        function openAboutBlank() {}
-        function resetAllSettings() {}
-        function applyChanges() { toggleModal(false); }
-        function filterGrid() {}
-        function handleBrowserSearch() {}
+        function stageToggle(feature) {
+            if (feature === 'gravity') {
+                stagedGravity = !stagedGravity;
+                const btn = document.getElementById('modal-toggle-gravity');
+                btn.classList.toggle('active', stagedGravity);
+                btn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
+            } else if (feature === 'float') {
+                stagedFloat = !stagedFloat;
+                const btn = document.getElementById('modal-toggle-float');
+                btn.classList.toggle('active', stagedFloat);
+                btn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
+            }
+        }
 
-        // Initialize default theme
-        stageTheme('subaru');
+        function applyChanges() {
+            activeTheme = stagedTheme;
+            activeSpacing = stagedSpacing;
+            activeGravity = stagedGravity;
+            activeFloat = stagedFloat;
+            activePhysics = stagedPhysics;
+
+            localStorage.setItem('subaru_theme', activeTheme);
+            localStorage.setItem('subaru_spacing', activeSpacing);
+            localStorage.setItem('subaru_gravity', activeGravity);
+            localStorage.setItem('subaru_float', activeFloat);
+            localStorage.setItem('subaru_physics', activePhysics);
+
+            initApp();
+            toggleModal(false);
+        }
+
+        function resetAllSettings() {
+            localStorage.clear();
+            stagedTheme = 'subaru';
+            stagedSpacing = 45;
+            stagedGravity = true;
+            stagedFloat = true;
+            stagedPhysics = 'warp';
+
+            document.getElementById('modal-slider').value = stagedSpacing;
+            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
+
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('subaru')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('warp')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.classList.add('active');
+            gravBtn.innerText = 'Grid Warp: ON';
+
+            const floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.classList.add('active');
+            floatBtn.innerText = 'Avatar Float: ON';
+
+            applyChanges();
+        }
+
+        function toggleModal(open) {
+            const modal = document.getElementById('settings-modal');
+            if (open) {
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function openAboutBlank() {
+            const win = window.open('about:blank');
+            if (!win) {
+                alert('Pop-up blocked! Please allow pop-ups for this site to use about:blank cloaking.');
+                return;
+            }
+            const doc = win.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>Dashboard</title>
+                    <style>
+                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${window.location.href}"></iframe>
+                </body>
+                </html>
+            `);
+            doc.close();
+        }
+
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, speed: 0 };
+        let lastMouseX = -1000, lastMouseY = -1000;
+        let lockedNodes = new Map(); // For snap-release lock state
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+            
+            let dx = e.clientX - lastMouseX;
+            let dy = e.clientY - lastMouseY;
+            mouse.speed = Math.sqrt(dx * dx + dy * dy);
+            
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.targetX = -1000;
+            mouse.targetY = -1000;
+            mouse.speed = 0;
+        });
+
+        function updateMouse() {
+            mouse.x += (mouse.targetX - mouse.x) * 0.15;
+            mouse.y += (mouse.targetY - mouse.y) * 0.15;
+            mouse.speed *= 0.9; // decay speed
+            requestAnimationFrame(updateMouse);
+        }
+        updateMouse();
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            const cols = Math.floor(width / activeSpacing) + 2;
+            const rows = Math.floor(height / activeSpacing) + 2;
+            const offsetX = (width % activeSpacing) / 2;
+            const offsetY = (height % activeSpacing) / 2;
+
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    let originX = i * activeSpacing + offsetX;
+                    let originY = j * activeSpacing + offsetY;
+                    let x = originX;
+                    let y = originY;
+                    let nodeKey = `${i}_${j}`;
+
+                    if (activeGravity) {
+                        let dx = mouse.x - x;
+                        let dy = mouse.y - y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        let maxDist = 200;
+
+                        if (dist < maxDist && dist > 0) {
+                            let force = (1 - dist / maxDist);
+                            let angle = Math.atan2(dy, dx);
+
+                            if (activePhysics === 'warp') {
+                                x -= Math.cos(angle) * force * 25;
+                                y -= Math.sin(angle) * force * 25;
+                            } 
+                            else if (activePhysics === 'snap') {
+                                // If mouse moves too fast (> 25px/frame), break tension and lock nodes in place temporarily
+                                if (mouse.speed > 25) {
+                                    lockedNodes.set(nodeKey, { x: x - Math.cos(angle) * force * 30, y: y - Math.sin(angle) * force * 30, time: Date.now() });
+                                }
+                                
+                                if (lockedNodes.has(nodeKey)) {
+                                    let lockData = lockedNodes.get(nodeKey);
+                                    x = lockData.x;
+                                    y = lockData.y;
+                                    // release lock after 800ms
+                                    if (Date.now() - lockData.time > 800) {
+                                        lockedNodes.delete(nodeKey);
+                                    }
+                                } else {
+                                    x -= Math.cos(angle) * force * 35;
+                                    y -= Math.sin(angle) * force * 35;
+                                }
+                            }
+                            else if (activePhysics === 'vortex') {
+                                let perpAngle = angle + Math.PI / 2;
+                                x -= Math.cos(angle) * force * 20 - Math.cos(perpAngle) * force * 30;
+                                y -= Math.sin(angle) * force * 20 - Math.sin(perpAngle) * force * 30;
+                            }
+                            else if (activePhysics === 'repel') {
+                                x += Math.cos(angle) * force * 30;
+                                y += Math.sin(angle) * force * 30;
+                            }
+                        }
+
+                        ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.25);
+                    } else {
+                        ctx.fillStyle = hexToRgba(currentThemeColor, 0.25);
+                    }
+
+                    ctx.fillRect(x - 1, y - 1, 2, 2);
+                }
+            }
+            requestAnimationFrame(drawGrid);
+        }
+        drawGrid();
+
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#','');
+            if(c.length===3) c = c.split('').map(x => x+x).join('');
+            let num = parseInt(c,16);
+            return `rgba(${num>>16},${(num>>8)&255},${num&255},${alpha})`;
+        }
+
+        function switchView(viewName) {
+            const sections = document.querySelectorAll('.view-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            
+            setTimeout(() => {
+                const target = document.getElementById('view-' + viewName);
+                if (target) {
+                    target.classList.add('active');
+                }
+            }, 200);
+        }
+
+        function filterGrid(input, gridId) {
+            const query = input.value.toLowerCase();
+            const grid = document.getElementById(gridId);
+            const cards = grid.getElementsByClassName('grid-card');
+            
+            for (let card of cards) {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        }
+
+        function handleBrowserSearch(event) {
+            if (event.key === 'Enter') {
+                const query = event.target.value;
+                if(query) {
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+                }
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Run setup on load
+        initApp();
     </script>
 </body>
 </html>
