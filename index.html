@@ -301,7 +301,7 @@
             transition: opacity 0.3s ease 0.15s, transform 0.3s ease 0.15s, visibility 0.3s ease 0.15s;
             visibility: hidden;
         }
-
+        
         .dropdown-menu::after {
             content: '';
             position: absolute;
@@ -593,7 +593,7 @@
             color: #fff;
             box-shadow: 0 0 15px var(--bg-glow);
         }
-
+        
         .physics-btn.active .phys-title {
             color: var(--primary);
         }
@@ -774,7 +774,7 @@
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                 </button>
                 <button class="icon-link" title="Settings" onclick="openSettingsModal()">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c-.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c-.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c-.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                 </button>
             </div>
         </div>
@@ -787,7 +787,7 @@
                 <h2 class="modal-title">system configuration & parameters</h2>
                 <button class="close-btn" onclick="toggleModal(false)">&times;</button>
             </div>
-
+            
             <div class="modal-body-scroll">
                 <div class="setting-group">
                     <div class="setting-label">Character Interface Protocol</div>
@@ -817,17 +817,17 @@
                             <div class="phys-title">Standard Warp <span>[Smooth Pull]</span></div>
                             <div class="phys-desc">Classic fluid gravitational pull towards cursor proximity.</div>
                         </button>
-                        <button class="physics-btn" onclick="stagePhysics('magnetic', this)">
-                            <div class="phys-title">Magnetic Powder <span>[Inertial Drag]</span></div>
-                            <div class="phys-desc">Custom shape particles get pulled to cursor and lag behind if you move too fast.</div>
+                        <button class="physics-btn" onclick="stagePhysics('snap', this)">
+                            <div class="phys-title">Snap-Release Magnet <span>[Velocity Break]</span></div>
+                            <div class="phys-desc">Pulls grid points along with cursor movement; fast flicks break tension and lock nodes in place.</div>
                         </button>
-                        <button class="physics-btn" onclick="stagePhysics('quantum', this)">
-                            <div class="phys-title">Quantum Matrix <span>[Hex Cascade]</span></div>
-                            <div class="phys-desc">Rotates and scales floating polygonal matrix shapes reacting to cursor speed.</div>
+                        <button class="physics-btn" onclick="stagePhysics('vortex', this)">
+                            <div class="phys-title">Singularity Vortex <span>[Rotational Pull]</span></div>
+                            <div class="phys-desc">Swirls grid coordinates in a high-speed gravitational spin around the cursor.</div>
                         </button>
-                        <button class="physics-btn" onclick="stagePhysics('pulse', this)">
-                            <div class="phys-title">Neon Pulse Wave <span>[Orbital Rings]</span></div>
-                            <div class="phys-desc">Expanding concentric energy rings pulsing outward from cursor interaction point.</div>
+                        <button class="physics-btn" onclick="stagePhysics('repel', this)">
+                            <div class="phys-title">Quantum Repulsion <span>[Inverted Push]</span></div>
+                            <div class="phys-desc">Pushes space-time away from the cursor creating an open clearance bubble.</div>
                         </button>
                     </div>
                 </div>
@@ -877,7 +877,7 @@
                 namePart2: "",
                 subtitle: "sword",
                 avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ff2a2a",     /* Deep crimson red */
+                primary: "#ff2a2a",      /* Deep crimson red */
                 secondary: "#0055ff",    /* Dark navy blue */
                 glow: "rgba(255, 42, 42, 0.25)",
                 cardBg: "rgba(10, 5, 5, 0.85)",
@@ -899,453 +899,385 @@
                 textColor: "#111111"
             },
             satella: {
-                namePart1: "satella",
+                namePart1: "",
                 namePart2: "",
                 subtitle: "envy",
-                avatar: "https://static.wikia.nocookie.net/rezero/images/3/3a/Satella_anime.png",
-                primary: "#9400d3",
+                avatar: "https://static.wikia.nocookie.net/vsbattles/images/9/9b/Satella_render2.png/revision/latest?cb=20241207055143",
+                primary: "#9932cc",
                 secondary: "#4b0082",
-                glow: "rgba(148, 0, 211, 0.3)",
-                cardBg: "rgba(10, 2, 15, 0.85)",
-                border: "rgba(148, 0, 211, 0.3)",
-                bg: "#05010a",
+                glow: "rgba(153, 50, 204, 0.25)",
+                cardBg: "rgba(10, 3, 15, 0.9)",
+                border: "rgba(153, 50, 204, 0.4)",
+                bg: "#030503",
                 textColor: "#ffffff"
             }
         };
 
-        // Current App State
-        let currentTheme = 'subaru';
-        let gridSpacing = 45;
-        let physicsMode = 'warp';
-        let gravityEnabled = true;
-        let floatEnabled = true;
+        // Active States (Live)
+        let activeTheme = localStorage.getItem('subaru_theme') || 'subaru';
+        let activeSpacing = parseInt(localStorage.getItem('subaru_spacing')) || 45;
+        let activeGravity = localStorage.getItem('subaru_gravity') !== 'false';
+        let activeFloat = localStorage.getItem('subaru_float') !== 'false';
+        let activePhysics = localStorage.getItem('subaru_physics') || 'warp';
+        let currentThemeColor = characters[activeTheme] ? characters[activeTheme].primary : "#00ff66";
 
-        // Staged Settings (Before clicking apply)
-        let stagedTheme = currentTheme;
-        let stagedSpacing = gridSpacing;
-        let stagedPhysics = physicsMode;
-        let stagedGravity = gravityEnabled;
-        let stagedFloat = floatEnabled;
+        function initApp() {
+            const char = characters[activeTheme] || characters['subaru'];
+            document.getElementById('title-part1').innerText = char.namePart1;
+            document.getElementById('title-part2').innerText = char.namePart2;
+            document.getElementById('active-subtitle').innerText = char.subtitle;
+            document.getElementById('active-avatar').src = char.avatar;
 
-        // Canvas & Animation Engine
-        const canvas = document.getElementById('space-canvas');
-        const ctx = canvas.getContext('2d');
-        let mouseX = -1000;
-        let mouseY = -1000;
-        let prevMouseX = -1000;
-        let prevMouseY = -1000;
-        let mouseSpeed = 0;
+            document.body.style.backgroundColor = char.bg;
+            document.body.style.color = char.textColor;
 
-        // Particles for custom shapes (Magnetic powder, Quantum, etc.)
-        let particles = [];
+            const root = document.documentElement;
+            root.style.setProperty('--primary', char.primary);
+            root.style.setProperty('--secondary', char.secondary);
+            root.style.setProperty('--bg-glow', char.glow);
+            root.style.setProperty('--card-bg', char.cardBg);
+            root.style.setProperty('--border-color', char.border);
+            root.style.setProperty('--text-color', char.textColor);
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        }
-        window.addEventListener('resize', resizeCanvas);
+            currentThemeColor = char.primary;
 
-        function initParticles() {
-            particles = [];
-            let count = Math.floor((canvas.width * canvas.height) / 4500);
-            count = Math.max(40, Math.min(count, 150));
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    baseX: Math.random() * canvas.width,
-                    baseY: Math.random() * canvas.height,
-                    vx: 0,
-                    vy: 0,
-                    size: Math.random() * 4 + 2,
-                    shape: Math.random() > 0.5 ? 'circle' : (Math.random() > 0.5 ? 'square' : 'triangle'),
-                    angle: Math.random() * Math.PI * 2,
-                    spin: (Math.random() - 0.5) * 0.05
-                });
-            }
+            const avatarContainer = document.querySelector('.avatar-container');
+            avatarContainer.style.animation = activeFloat ? 'floatAnim 4s ease-in-out infinite' : 'none';
         }
 
-        window.addEventListener('mousemove', (e) => {
-            prevMouseX = mouseX;
-            prevMouseY = mouseY;
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            let dx = mouseX - prevMouseX;
-            let dy = mouseY - prevMouseY;
-            mouseSpeed = Math.sqrt(dx * dx + dy * dy);
-        });
+        // Staged States (Pending in Modal)
+        let stagedTheme = activeTheme;
+        let stagedSpacing = activeSpacing;
+        let stagedGravity = activeGravity;
+        let stagedFloat = activeFloat;
+        let stagedPhysics = activePhysics;
 
-        window.addEventListener('mouseleave', () => {
-            mouseX = -1000;
-            mouseY = -1000;
-            mouseSpeed = 0;
-        });
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            let primaryColor = characters[currentTheme].primary;
-
-            if (physicsMode === 'warp' && gravityEnabled) {
-                // Standard Warp Grid
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1;
-                ctx.globalAlpha = 0.22;
-
-                let cols = Math.floor(canvas.width / gridSpacing) + 1;
-                let rows = Math.floor(canvas.height / gridSpacing) + 1;
-
-                let points = [];
-                for (let r = 0; r <= rows; r++) {
-                    let rowPoints = [];
-                    for (let c = 0; c <= cols; c++) {
-                        let origX = c * gridSpacing;
-                        let origY = r * gridSpacing;
-                        let x = origX;
-                        let y = origY;
-
-                        let dx = mouseX - origX;
-                        let dy = mouseY - origY;
-                        let dist = Math.sqrt(dx * dx + dy * dy);
-                        let maxDist = 180;
-
-                        if (dist < maxDist && dist > 0) {
-                            let force = (1 - dist / maxDist) * 25;
-                            x -= (dx / dist) * force;
-                            y -= (dy / dist) * force;
-                        }
-
-                        rowPoints.push({ x, y });
-                    }
-                    points.push(rowPoints);
-                }
-
-                // Draw Grid Lines
-                for (let r = 0; r < points.length; r++) {
-                    ctx.beginPath();
-                    for (let c = 0; c < points[r].length; c++) {
-                        if (c === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
-                        else ctx.lineTo(points[r][c].x, points[r][c].y);
-                    }
-                    ctx.stroke();
-                }
-
-                for (let c = 0; c < points[0].length; c++) {
-                    ctx.beginPath();
-                    for (let r = 0; r < points.length; r++) {
-                        if (r === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
-                        else ctx.lineTo(points[r][c].x, points[r][c].y);
-                    }
-                    ctx.stroke();
-                }
-
-            } else if (physicsMode === 'magnetic') {
-                // Magnetic Powder mode: Particles pulled to cursor, lag behind if moving fast
-                ctx.fillStyle = primaryColor;
-                ctx.strokeStyle = primaryColor;
-
-                particles.forEach(p => {
-                    let dx = mouseX - p.x;
-                    let dy = mouseY - p.y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (mouseX > 0 && dist < 250) {
-                        // Pull towards cursor with velocity lag
-                        let pullStrength = Math.min(15, (250 - dist) * 0.05);
-                        p.vx += (dx / dist) * pullStrength * 0.2;
-                        p.vy += (dy / dist) * pullStrength * 0.2;
-                    } else {
-                        // Return to baseline float
-                        p.vx += (p.baseX - p.x) * 0.02;
-                        p.vy += (p.baseY - p.y) * 0.02;
-                    }
-
-                    // Apply drag / friction based on mouse speed (if moving too fast, they fall behind)
-                    let friction = mouseSpeed > 30 ? 0.95 : 0.88;
-                    p.vx *= friction;
-                    p.vy *= friction;
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.angle += p.spin;
-
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.angle);
-                    ctx.globalAlpha = 0.45;
-
-                    if (p.shape === 'circle') {
-                        ctx.beginPath();
-                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (p.shape === 'square') {
-                        ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2);
-                    } else {
-                        ctx.beginPath();
-                        ctx.moveTo(0, -p.size * 1.5);
-                        ctx.lineTo(p.size * 1.2, p.size * 1.2);
-                        ctx.lineTo(-p.size * 1.2, p.size * 1.2);
-                        ctx.closePath();
-                        ctx.fill();
-                    }
-                    ctx.restore();
-                });
-
-            } else if (physicsMode === 'quantum') {
-                // Quantum Matrix: Hexagonal cascading grid of shapes reacting to cursor velocity
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1;
-                particles.forEach(p => {
-                    p.angle += 0.02;
-                    let dx = mouseX - p.x;
-                    let dy = mouseY - p.y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    let scaleFactor = 1;
-
-                    if (mouseX > 0 && dist < 200) {
-                        scaleFactor = 1 + (200 - dist) / 50 + (mouseSpeed * 0.02);
-                    }
-
-                    ctx.save();
-                    ctx.translate(p.baseX, p.baseY);
-                    ctx.rotate(p.angle);
-                    ctx.scale(scaleFactor, scaleFactor);
-                    ctx.globalAlpha = 0.35;
-
-                    ctx.beginPath();
-                    for (let i = 0; i < 6; i++) {
-                        let angle = (i * Math.PI) / 3;
-                        let hx = Math.cos(angle) * (p.size * 2);
-                        let hy = Math.sin(angle) * (p.size * 2);
-                        if (i === 0) ctx.moveTo(hx, hy);
-                        else ctx.lineTo(hx, hy);
-                    }
-                    ctx.closePath();
-                    ctx.stroke();
-                    ctx.restore();
-                });
-
-            } else if (physicsMode === 'pulse') {
-                // Neon Pulse Wave: Expanding rings from mouse position
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1.5;
-                if (!window.pulseRings) window.pulseRings = [];
-
-                if (mouseX > 0 && Math.random() < 0.25) {
-                    window.pulseRings.push({ x: mouseX, y: mouseY, radius: 5, alpha: 0.8 });
-                }
-
-                for (let i = window.pulseRings.length - 1; i >= 0; i--) {
-                    let ring = window.pulseRings[i];
-                    ring.radius += 3;
-                    ring.alpha -= 0.015;
-
-                    if (ring.alpha <= 0) {
-                        window.pulseRings.splice(i, 1);
-                        continue;
-                    }
-
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
-                    ctx.strokeStyle = primaryColor;
-                    ctx.globalAlpha = ring.alpha;
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
-            requestAnimationFrame(animateCanvas);
-        }
-
-        // Clock & Status
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // View Management
-        function switchView(viewName) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${viewName}`).classList.add('active');
-        }
-
-        // Filter Grid function for Games and Apps
-        function filterGrid(input, gridId) {
-            let filter = input.value.toLowerCase();
-            let grid = document.getElementById(gridId);
-            let cards = grid.getElementsByClassName('grid-card');
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].getElementsByTagName('h3')[0];
-                if (title) {
-                    let text = title.textContent || title.innerText;
-                    cards[i].style.display = text.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-                }
-            }
-        }
-
-        // Browser Search Function
-        function handleBrowserSearch(e) {
-            if (e.key === 'Enter') {
-                let query = e.target.value.trim();
-                if (query) {
-                    let url = query.startsWith('http://') || query.startsWith('https://') ? query : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                    window.open(url, '_blank');
-                }
-            }
-        }
-
-        // Settings Modal Controls
         function openSettingsModal() {
-            // Sync staged variables with current active state
-            stagedTheme = currentTheme;
-            stagedSpacing = gridSpacing;
-            stagedPhysics = physicsMode;
-            stagedGravity = gravityEnabled;
-            stagedFloat = floatEnabled;
+            stagedTheme = activeTheme;
+            stagedSpacing = activeSpacing;
+            stagedGravity = activeGravity;
+            stagedFloat = activeFloat;
+            stagedPhysics = activePhysics;
 
-            updateModalUI();
-            document.getElementById('settings-modal').classList.add('active');
+            document.getElementById('modal-slider').value = stagedSpacing;
+            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
+
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(stagedTheme)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(stagedPhysics)) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.classList.toggle('active', stagedGravity);
+            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
+
+            const floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.classList.toggle('active', stagedFloat);
+            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
+
+            toggleModal(true);
         }
 
-        function toggleModal(show) {
-            const modal = document.getElementById('settings-modal');
-            if (show) modal.classList.add('active');
-            else modal.classList.remove('active');
+        function stageTheme(key, btnElement) {
+            stagedTheme = key;
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
         }
 
-        function stageTheme(themeKey, btn) {
-            stagedTheme = themeKey;
-            document.querySelectorAll('#modal-char-grid .char-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function stagePhysics(mode, btnElement) {
+            stagedPhysics = mode;
+            const buttons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
         }
 
         function stageSpacing(val) {
             stagedSpacing = parseInt(val);
-            document.getElementById('grid-val').innerText = `${val}px`;
-            document.getElementById('modal-slider').value = val;
+            document.getElementById('grid-val').innerText = val + 'px';
         }
 
-        function stagePhysics(modeKey, btn) {
-            stagedPhysics = modeKey;
-            document.querySelectorAll('#modal-physics-grid .physics-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function stageToggle(toggleType) {
-            if (toggleType === 'gravity') {
+        function stageToggle(feature) {
+            if (feature === 'gravity') {
                 stagedGravity = !stagedGravity;
-                let btn = document.getElementById('modal-toggle-gravity');
+                const btn = document.getElementById('modal-toggle-gravity');
+                btn.classList.toggle('active', stagedGravity);
                 btn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-                if (stagedGravity) btn.classList.add('active');
-                else btn.classList.remove('active');
-            } else if (toggleType === 'float') {
+            } else if (feature === 'float') {
                 stagedFloat = !stagedFloat;
-                let btn = document.getElementById('modal-toggle-float');
+                const btn = document.getElementById('modal-toggle-float');
+                btn.classList.toggle('active', stagedFloat);
                 btn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-                if (stagedFloat) btn.classList.add('active');
-                else btn.classList.remove('active');
             }
         }
 
-        function updateModalUI() {
-            // Highlight active character button
-            const charBtns = document.querySelectorAll('#modal-char-grid .char-btn');
-            charBtns.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick').includes(stagedTheme)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Set slider value
-            stageSpacing(stagedSpacing);
-
-            // Highlight active physics button
-            const physBtns = document.querySelectorAll('#modal-physics-grid .physics-btn');
-            physBtns.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick').includes(stagedPhysics)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Set toggle buttons state
-            let gravBtn = document.getElementById('modal-toggle-gravity');
-            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-            if (stagedGravity) gravBtn.classList.add('active'); else gravBtn.classList.remove('active');
-
-            let floatBtn = document.getElementById('modal-toggle-float');
-            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-            if (stagedFloat) floatBtn.classList.add('active'); else floatBtn.classList.remove('active');
-        }
-
         function applyChanges() {
-            currentTheme = stagedTheme;
-            gridSpacing = stagedSpacing;
-            physicsMode = stagedPhysics;
-            gravityEnabled = stagedGravity;
-            floatEnabled = stagedFloat;
+            activeTheme = stagedTheme;
+            activeSpacing = stagedSpacing;
+            activeGravity = stagedGravity;
+            activeFloat = stagedFloat;
+            activePhysics = stagedPhysics;
 
-            applyThemeToDOM(currentTheme);
+            localStorage.setItem('subaru_theme', activeTheme);
+            localStorage.setItem('subaru_spacing', activeSpacing);
+            localStorage.setItem('subaru_gravity', activeGravity);
+            localStorage.setItem('subaru_float', activeFloat);
+            localStorage.setItem('subaru_physics', activePhysics);
+
+            initApp();
             toggleModal(false);
         }
 
         function resetAllSettings() {
+            localStorage.clear();
             stagedTheme = 'subaru';
             stagedSpacing = 45;
-            stagedPhysics = 'warp';
             stagedGravity = true;
             stagedFloat = true;
-            updateModalUI();
+            stagedPhysics = 'warp';
+
+            document.getElementById('modal-slider').value = stagedSpacing;
+            document.getElementById('grid-val').innerText = stagedSpacing + 'px';
+
+            const buttons = document.querySelectorAll('#modal-char-grid .char-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('subaru')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const physButtons = document.querySelectorAll('#modal-physics-grid .physics-btn');
+            physButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes('warp')) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const gravBtn = document.getElementById('modal-toggle-gravity');
+            gravBtn.classList.add('active');
+            gravBtn.innerText = 'Grid Warp: ON';
+
+            const floatBtn = document.getElementById('modal-toggle-float');
+            floatBtn.classList.add('active');
+            floatBtn.innerText = 'Avatar Float: ON';
+
+            applyChanges();
         }
 
-        function applyThemeToDOM(themeKey) {
-            const data = characters[themeKey];
-            const root = document.documentElement;
-
-            root.style.setProperty('--primary', data.primary);
-            root.style.setProperty('--secondary', data.secondary);
-            root.style.setProperty('--bg-glow', data.glow);
-            root.style.setProperty('--card-bg', data.cardBg);
-            root.style.setProperty('--border-color', data.border);
-            root.style.setProperty('--text-color', data.textColor);
-            document.body.style.backgroundColor = data.bg;
-
-            document.getElementById('title-part1').innerText = data.namePart1;
-            document.getElementById('title-part2').innerText = data.namePart2;
-            document.getElementById('active-subtitle').innerText = data.subtitle;
-
-            const avatarImg = document.getElementById('active-avatar');
-            avatarImg.src = data.avatar;
-
-            // Avatar Float Animation Toggle
-            const avatarContainer = document.querySelector('.avatar-container');
-            if (floatEnabled) {
-                avatarContainer.style.animation = 'floatAnim 4s ease-in-out infinite';
+        function toggleModal(open) {
+            const modal = document.getElementById('settings-modal');
+            if (open) {
+                modal.classList.add('active');
             } else {
-                avatarContainer.style.animation = 'none';
+                modal.classList.remove('active');
             }
         }
 
         function openAboutBlank() {
-            let win = window.open();
-            win.document.write(document.documentElement.outerHTML);
-            win.document.close();
+            const win = window.open('about:blank');
+            if (!win) {
+                alert('Pop-up blocked! Please allow pop-ups for this site to use about:blank cloaking.');
+                return;
+            }
+            const doc = win.document;
+            doc.open();
+            doc.write(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <title>Dashboard</title>
+                    <style>
+                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${window.location.href}"></iframe>
+                </body>
+                </html>
+            `);
+            doc.close();
         }
 
-        // Initialize default theme on load
-        window.onload = () => {
-            applyThemeToDOM(currentTheme);
-            resizeCanvas();
-            animateCanvas();
-        };
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, speed: 0 };
+        let lastMouseX = -1000, lastMouseY = -1000;
+        let lockedNodes = new Map(); // For snap-release lock state
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+            
+            let dx = e.clientX - lastMouseX;
+            let dy = e.clientY - lastMouseY;
+            mouse.speed = Math.sqrt(dx * dx + dy * dy);
+            
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.targetX = -1000;
+            mouse.targetY = -1000;
+            mouse.speed = 0;
+        });
+
+        function updateMouse() {
+            mouse.x += (mouse.targetX - mouse.x) * 0.15;
+            mouse.y += (mouse.targetY - mouse.y) * 0.15;
+            mouse.speed *= 0.9; // decay speed
+            requestAnimationFrame(updateMouse);
+        }
+        updateMouse();
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+
+            const cols = Math.floor(width / activeSpacing) + 2;
+            const rows = Math.floor(height / activeSpacing) + 2;
+            const offsetX = (width % activeSpacing) / 2;
+            const offsetY = (height % activeSpacing) / 2;
+
+            for (let i = 0; i < cols; i++) {
+                for (let j = 0; j < rows; j++) {
+                    let originX = i * activeSpacing + offsetX;
+                    let originY = j * activeSpacing + offsetY;
+                    let x = originX;
+                    let y = originY;
+                    let nodeKey = `${i}_${j}`;
+
+                    if (activeGravity) {
+                        let dx = mouse.x - x;
+                        let dy = mouse.y - y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        let maxDist = 200;
+
+                        if (dist < maxDist && dist > 0) {
+                            let force = (1 - dist / maxDist);
+                            let angle = Math.atan2(dy, dx);
+
+                            if (activePhysics === 'warp') {
+                                x -= Math.cos(angle) * force * 25;
+                                y -= Math.sin(angle) * force * 25;
+                            } 
+                            else if (activePhysics === 'snap') {
+                                // If mouse moves too fast (> 25px/frame), break tension and lock nodes in place temporarily
+                                if (mouse.speed > 25) {
+                                    lockedNodes.set(nodeKey, { x: x - Math.cos(angle) * force * 30, y: y - Math.sin(angle) * force * 30, time: Date.now() });
+                                }
+                                
+                                if (lockedNodes.has(nodeKey)) {
+                                    let lockData = lockedNodes.get(nodeKey);
+                                    x = lockData.x;
+                                    y = lockData.y;
+                                    // release lock after 800ms
+                                    if (Date.now() - lockData.time > 800) {
+                                        lockedNodes.delete(nodeKey);
+                                    }
+                                } else {
+                                    x -= Math.cos(angle) * force * 35;
+                                    y -= Math.sin(angle) * force * 35;
+                                }
+                            }
+                            else if (activePhysics === 'vortex') {
+                                let perpAngle = angle + Math.PI / 2;
+                                x -= Math.cos(angle) * force * 20 - Math.cos(perpAngle) * force * 30;
+                                y -= Math.sin(angle) * force * 20 - Math.sin(perpAngle) * force * 30;
+                            }
+                            else if (activePhysics === 'repel') {
+                                x += Math.cos(angle) * force * 30;
+                                y += Math.sin(angle) * force * 30;
+                            }
+                        }
+
+                        ctx.fillStyle = dist < maxDist ? currentThemeColor : hexToRgba(currentThemeColor, 0.25);
+                    } else {
+                        ctx.fillStyle = hexToRgba(currentThemeColor, 0.25);
+                    }
+
+                    ctx.fillRect(x - 1, y - 1, 2, 2);
+                }
+            }
+            requestAnimationFrame(drawGrid);
+        }
+        drawGrid();
+
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#','');
+            if(c.length===3) c = c.split('').map(x => x+x).join('');
+            let num = parseInt(c,16);
+            return `rgba(${num>>16},${(num>>8)&255},${num&255},${alpha})`;
+        }
+
+        function switchView(viewName) {
+            const sections = document.querySelectorAll('.view-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            
+            setTimeout(() => {
+                const target = document.getElementById('view-' + viewName);
+                if (target) {
+                    target.classList.add('active');
+                }
+            }, 200);
+        }
+
+        function filterGrid(input, gridId) {
+            const query = input.value.toLowerCase();
+            const grid = document.getElementById(gridId);
+            const cards = grid.getElementsByClassName('grid-card');
+            
+            for (let card of cards) {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                if (title.includes(query) || desc.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            }
+        }
+
+        function handleBrowserSearch(event) {
+            if (event.key === 'Enter') {
+                const query = event.target.value;
+                if(query) {
+                    window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+                }
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toTimeString().split(' ')[0];
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Run setup on load
+        initApp();
     </script>
 </body>
 </html>
