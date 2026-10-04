@@ -6,12 +6,12 @@
     <title>Subaru Hub // Core</title>
     <style>
         :root {
-            --primary: #00ff66;
-            --secondary: #ff6f00;
-            --bg-glow: rgba(0, 255, 102, 0.3);
-            --card-bg: rgba(5, 10, 5, 0.85);
-            --border-color: rgba(0, 255, 102, 0.3);
-            --text-color: #ffffff;
+            --primary: #cccccc;
+            --secondary: #888888;
+            --bg-glow: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(15, 15, 15, 0.9);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --text-color: #e0e0e0;
         }
 
         * {
@@ -22,7 +22,7 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #030503;
+            background-color: #0c0c0c;
             color: var(--text-color);
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -59,7 +59,6 @@
             font-size: 11px;
             color: var(--primary);
             letter-spacing: 2px;
-            text-shadow: 0 0 10px var(--bg-glow);
             transition: color 0.4s ease;
         }
 
@@ -74,14 +73,13 @@
             height: 7px;
             background-color: var(--primary);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary);
             animation: pulse 2s infinite ease-in-out;
-            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+            transition: background-color 0.4s ease;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px var(--primary); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         .view-section {
@@ -119,8 +117,8 @@
         .avatar {
             width: 130px;
             height: auto;
-            filter: drop-shadow(0 0 25px var(--bg-glow)) drop-shadow(0 0 15px var(--secondary)); 
             border-radius: 12px;
+            border: 1px solid var(--border-color);
             transition: filter 0.4s ease;
         }
 
@@ -132,13 +130,11 @@
             color: var(--primary);
             text-transform: lowercase;
             padding-left: 14px;
-            text-shadow: 0 0 15px var(--bg-glow);
             transition: color 0.4s ease;
         }
 
         .title span {
             color: var(--secondary);
-            text-shadow: 0 0 15px var(--secondary);
             transition: color 0.4s ease;
         }
 
@@ -148,7 +144,6 @@
             margin-top: 15px;
             letter-spacing: 4px;
             text-transform: uppercase;
-            text-shadow: 0 0 10px var(--bg-glow);
             transition: color 0.4s ease;
         }
 
@@ -166,14 +161,13 @@
             color: var(--primary);
             text-transform: lowercase;
             margin-bottom: 15px;
-            text-shadow: 0 0 12px var(--bg-glow);
             transition: color 0.4s ease;
         }
 
         .search-box {
             width: 100%;
             max-width: 450px;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(15, 15, 15, 0.9);
             border: 1px solid var(--border-color);
             padding: 14px 20px;
             border-radius: 14px;
@@ -182,13 +176,11 @@
             font-size: 13px;
             letter-spacing: 1.5px;
             outline: none;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .search-box:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 25px var(--bg-glow), inset 0 0 10px var(--bg-glow);
             transform: translateY(-2px);
         }
 
@@ -215,9 +207,8 @@
 
         .grid-card:hover {
             border-color: var(--primary);
-            box-shadow: 0 0 20px var(--bg-glow);
             transform: translateY(-4px);
-            background: rgba(10, 20, 10, 0.9);
+            background: rgba(25, 25, 25, 0.9);
         }
 
         .grid-card h3 {
@@ -260,7 +251,6 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -268,13 +258,11 @@
             fill: var(--primary);
             width: 20px;
             height: 20px;
-            filter: drop-shadow(0 0 6px var(--bg-glow));
             transition: transform 0.3s ease, fill 0.4s ease;
         }
 
         .menu-container:hover .menu-btn {
             border-color: var(--primary);
-            box-shadow: 0 0 25px var(--bg-glow);
             transform: scale(1.08);
         }
 
@@ -289,11 +277,10 @@
             left: 50%;
             flex-direction: column;
             gap: 8px;
-            background: rgba(3, 5, 3, 0.95);
+            background: rgba(15, 15, 15, 0.95);
             border: 1px solid var(--border-color);
             padding: 10px;
             border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.95), 0 0 20px var(--bg-glow);
             backdrop-filter: blur(10px);
             opacity: 0;
             transform: translate(-50%, 10px) scale(0.95);
@@ -342,9 +329,8 @@
         }
 
         .icon-link:hover {
-            background-color: var(--bg-glow);
+            background-color: rgba(255, 255, 255, 0.05);
             border-color: var(--primary);
-            box-shadow: 0 0 12px var(--bg-glow);
             transform: scale(1.05);
         }
 
@@ -355,7 +341,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(14px);
             display: flex;
             align-items: center;
@@ -371,14 +357,13 @@
         }
 
         .modal-content {
-            background: rgba(4, 8, 4, 0.98);
+            background: rgba(18, 18, 18, 0.98);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             width: 92%;
             max-width: 580px;
             max-height: 88vh;
             padding: 30px;
-            box-shadow: 0 40px 90px rgba(0,0,0,0.95), 0 0 50px var(--bg-glow);
             display: flex;
             flex-direction: column;
             gap: 22px;
@@ -406,7 +391,6 @@
             color: var(--primary);
             margin: 0;
             text-transform: lowercase;
-            text-shadow: 0 0 10px var(--bg-glow);
         }
 
         .close-btn {
@@ -425,8 +409,7 @@
         }
 
         .close-btn:hover {
-            background: var(--bg-glow);
-            box-shadow: 0 0 12px var(--bg-glow);
+            background: rgba(255, 255, 255, 0.08);
             transform: scale(1.05);
         }
 
@@ -438,7 +421,6 @@
             padding-right: 4px;
         }
 
-        /* Custom Scrollbar for sleek look */
         .modal-body-scroll::-webkit-scrollbar {
             width: 6px;
         }
@@ -513,9 +495,8 @@
 
         .char-btn.active {
             border-color: var(--primary);
-            background: var(--bg-glow);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            box-shadow: 0 0 15px var(--bg-glow);
         }
 
         .char-btn.active span {
@@ -589,9 +570,8 @@
 
         .physics-btn.active {
             border-color: var(--primary);
-            background: var(--bg-glow);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            box-shadow: 0 0 15px var(--bg-glow);
         }
 
         .physics-btn.active .phys-title {
@@ -620,9 +600,8 @@
 
         .toggle-btn.active {
             border-color: var(--primary);
-            background: var(--bg-glow);
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            box-shadow: 0 0 10px var(--bg-glow);
         }
 
         .action-btn {
@@ -646,9 +625,8 @@
         }
 
         .action-btn:hover {
-            background: var(--bg-glow);
+            background: rgba(255, 255, 255, 0.05);
             border-color: var(--primary);
-            box-shadow: 0 0 20px var(--bg-glow);
             transform: translateY(-2px);
         }
 
@@ -661,7 +639,7 @@
 
         .btn-apply {
             flex: 1.5;
-            background: var(--primary);
+            background: #e0e0e0;
             color: #000;
             border: none;
             padding: 12px;
@@ -676,7 +654,6 @@
 
         .btn-apply:hover {
             opacity: 0.9;
-            box-shadow: 0 0 18px var(--primary);
         }
 
         .btn-cancel {
@@ -821,531 +798,16 @@
                             <div class="phys-title">Magnetic Powder <span>[Inertial Drag]</span></div>
                             <div class="phys-desc">Custom shape particles get pulled to cursor and lag behind if you move too fast.</div>
                         </button>
-                        <button class="physics-btn" onclick="stagePhysics('quantum', this)">
-                            <div class="phys-title">Quantum Matrix <span>[Hex Cascade]</span></div>
-                            <div class="phys-desc">Rotates and scales floating polygonal matrix shapes reacting to cursor speed.</div>
-                        </button>
-                        <button class="physics-btn" onclick="stagePhysics('pulse', this)">
-                            <div class="phys-title">Neon Pulse Wave <span>[Orbital Rings]</span></div>
-                            <div class="phys-desc">Expanding concentric energy rings pulsing outward from cursor interaction point.</div>
-                        </button>
                     </div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-label">Visual & Animation Toggles</div>
-                    <div class="toggle-grid">
-                        <button class="toggle-btn" id="modal-toggle-gravity" onclick="stageToggle('gravity')">Grid Warp: ON</button>
-                        <button class="toggle-btn" id="modal-toggle-float" onclick="stageToggle('float')">Avatar Float: ON</button>
-                    </div>
-                </div>
-
-                <div class="setting-group">
-                    <div class="setting-label">Security & Cloaking Protocol</div>
-                    <button class="action-btn" onclick="openAboutBlank()">
-                        <svg style="width:14px;height:14px;fill:var(--primary);" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-                        Initialize about:blank Cloak
-                    </button>
                 </div>
             </div>
 
             <div class="modal-footer-actions">
-                <button class="btn-cancel" onclick="resetAllSettings()">Reset All</button>
-                <button class="btn-apply" onclick="applyChanges()">Apply Changes</button>
                 <button class="btn-cancel" onclick="toggleModal(false)">Cancel</button>
+                <button class="btn-apply" onclick="applySettings()">Apply Changes</button>
             </div>
         </div>
     </div>
 
-    <script>
-        const characters = {
-            subaru: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "core",
-                avatar: "https://a.storyblok.com/f/178900/1120x1760/ad01f9dc4e/re-zero-char1_subaru.webp/m/filters:quality(95)format(webp)",
-                primary: "#00ff66",
-                secondary: "#ff6f00",
-                glow: "rgba(0, 255, 102, 0.3)",
-                cardBg: "rgba(5, 10, 5, 0.85)",
-                border: "rgba(0, 255, 102, 0.3)",
-                bg: "#030503",
-                textColor: "#ffffff"
-            },
-            reinhard: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "sword",
-                avatar: "https://static.wikia.nocookie.net/p__/images/e/e1/Reinhard_van_Astrea_Season_Three_Infobox_2.png/revision/latest?cb=20240716115025&path-prefix=protagonist",
-                primary: "#ff2a2a",     /* Deep crimson red */
-                secondary: "#0055ff",    /* Dark navy blue */
-                glow: "rgba(255, 42, 42, 0.25)",
-                cardBg: "rgba(10, 5, 5, 0.85)",
-                border: "rgba(255, 42, 42, 0.3)",
-                bg: "#030305",
-                textColor: "#ffffff"
-            },
-            emilia: {
-                namePart1: "",
-                namePart2: "",
-                subtitle: "frost",
-                avatar: "https://static.wikia.nocookie.net/rezero/images/5/59/Emilia_Season_1_Character_Design.png",
-                primary: "#8a2be2",
-                secondary: "#9932cc",
-                glow: "rgba(138, 43, 226, 0.3)",
-                cardBg: "rgba(255, 255, 255, 0.95)",
-                border: "rgba(138, 43, 226, 0.3)",
-                bg: "#ffffff",
-                textColor: "#111111"
-            },
-            satella: {
-                namePart1: "satella",
-                namePart2: "",
-                subtitle: "envy",
-                avatar: "https://static.wikia.nocookie.net/rezero/images/3/3a/Satella_anime.png",
-                primary: "#9400d3",
-                secondary: "#4b0082",
-                glow: "rgba(148, 0, 211, 0.3)",
-                cardBg: "rgba(10, 2, 15, 0.85)",
-                border: "rgba(148, 0, 211, 0.3)",
-                bg: "#05010a",
-                textColor: "#ffffff"
-            }
-        };
-
-        // Current App State
-        let currentTheme = 'subaru';
-        let gridSpacing = 45;
-        let physicsMode = 'warp';
-        let gravityEnabled = true;
-        let floatEnabled = true;
-
-        // Staged Settings (Before clicking apply)
-        let stagedTheme = currentTheme;
-        let stagedSpacing = gridSpacing;
-        let stagedPhysics = physicsMode;
-        let stagedGravity = gravityEnabled;
-        let stagedFloat = floatEnabled;
-
-        // Canvas & Animation Engine
-        const canvas = document.getElementById('space-canvas');
-        const ctx = canvas.getContext('2d');
-        let mouseX = -1000;
-        let mouseY = -1000;
-        let prevMouseX = -1000;
-        let prevMouseY = -1000;
-        let mouseSpeed = 0;
-
-        // Particles for custom shapes (Magnetic powder, Quantum, etc.)
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        }
-        window.addEventListener('resize', resizeCanvas);
-
-        function initParticles() {
-            particles = [];
-            let count = Math.floor((canvas.width * canvas.height) / 4500);
-            count = Math.max(40, Math.min(count, 150));
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    baseX: Math.random() * canvas.width,
-                    baseY: Math.random() * canvas.height,
-                    vx: 0,
-                    vy: 0,
-                    size: Math.random() * 4 + 2,
-                    shape: Math.random() > 0.5 ? 'circle' : (Math.random() > 0.5 ? 'square' : 'triangle'),
-                    angle: Math.random() * Math.PI * 2,
-                    spin: (Math.random() - 0.5) * 0.05
-                });
-            }
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            prevMouseX = mouseX;
-            prevMouseY = mouseY;
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            let dx = mouseX - prevMouseX;
-            let dy = mouseY - prevMouseY;
-            mouseSpeed = Math.sqrt(dx * dx + dy * dy);
-        });
-
-        window.addEventListener('mouseleave', () => {
-            mouseX = -1000;
-            mouseY = -1000;
-            mouseSpeed = 0;
-        });
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            let primaryColor = characters[currentTheme].primary;
-
-            if (physicsMode === 'warp' && gravityEnabled) {
-                // Standard Warp Grid
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1;
-                ctx.globalAlpha = 0.22;
-
-                let cols = Math.floor(canvas.width / gridSpacing) + 1;
-                let rows = Math.floor(canvas.height / gridSpacing) + 1;
-
-                let points = [];
-                for (let r = 0; r <= rows; r++) {
-                    let rowPoints = [];
-                    for (let c = 0; c <= cols; c++) {
-                        let origX = c * gridSpacing;
-                        let origY = r * gridSpacing;
-                        let x = origX;
-                        let y = origY;
-
-                        let dx = mouseX - origX;
-                        let dy = mouseY - origY;
-                        let dist = Math.sqrt(dx * dx + dy * dy);
-                        let maxDist = 180;
-
-                        if (dist < maxDist && dist > 0) {
-                            let force = (1 - dist / maxDist) * 25;
-                            x -= (dx / dist) * force;
-                            y -= (dy / dist) * force;
-                        }
-
-                        rowPoints.push({ x, y });
-                    }
-                    points.push(rowPoints);
-                }
-
-                // Draw Grid Lines
-                for (let r = 0; r < points.length; r++) {
-                    ctx.beginPath();
-                    for (let c = 0; c < points[r].length; c++) {
-                        if (c === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
-                        else ctx.lineTo(points[r][c].x, points[r][c].y);
-                    }
-                    ctx.stroke();
-                }
-
-                for (let c = 0; c < points[0].length; c++) {
-                    ctx.beginPath();
-                    for (let r = 0; r < points.length; r++) {
-                        if (r === 0) ctx.moveTo(points[r][c].x, points[r][c].y);
-                        else ctx.lineTo(points[r][c].x, points[r][c].y);
-                    }
-                    ctx.stroke();
-                }
-
-            } else if (physicsMode === 'magnetic') {
-                // Magnetic Powder mode: Particles pulled to cursor, lag behind if moving fast
-                ctx.fillStyle = primaryColor;
-                ctx.strokeStyle = primaryColor;
-
-                particles.forEach(p => {
-                    let dx = mouseX - p.x;
-                    let dy = mouseY - p.y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (mouseX > 0 && dist < 250) {
-                        // Pull towards cursor with velocity lag
-                        let pullStrength = Math.min(15, (250 - dist) * 0.05);
-                        p.vx += (dx / dist) * pullStrength * 0.2;
-                        p.vy += (dy / dist) * pullStrength * 0.2;
-                    } else {
-                        // Return to baseline float
-                        p.vx += (p.baseX - p.x) * 0.02;
-                        p.vy += (p.baseY - p.y) * 0.02;
-                    }
-
-                    // Apply drag / friction based on mouse speed (if moving too fast, they fall behind)
-                    let friction = mouseSpeed > 30 ? 0.95 : 0.88;
-                    p.vx *= friction;
-                    p.vy *= friction;
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.angle += p.spin;
-
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(p.angle);
-                    ctx.globalAlpha = 0.45;
-
-                    if (p.shape === 'circle') {
-                        ctx.beginPath();
-                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else if (p.shape === 'square') {
-                        ctx.fillRect(-p.size, -p.size, p.size * 2, p.size * 2);
-                    } else {
-                        ctx.beginPath();
-                        ctx.moveTo(0, -p.size * 1.5);
-                        ctx.lineTo(p.size * 1.2, p.size * 1.2);
-                        ctx.lineTo(-p.size * 1.2, p.size * 1.2);
-                        ctx.closePath();
-                        ctx.fill();
-                    }
-                    ctx.restore();
-                });
-
-            } else if (physicsMode === 'quantum') {
-                // Quantum Matrix: Hexagonal cascading grid of shapes reacting to cursor velocity
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1;
-                particles.forEach(p => {
-                    p.angle += 0.02;
-                    let dx = mouseX - p.x;
-                    let dy = mouseY - p.y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    let scaleFactor = 1;
-
-                    if (mouseX > 0 && dist < 200) {
-                        scaleFactor = 1 + (200 - dist) / 50 + (mouseSpeed * 0.02);
-                    }
-
-                    ctx.save();
-                    ctx.translate(p.baseX, p.baseY);
-                    ctx.rotate(p.angle);
-                    ctx.scale(scaleFactor, scaleFactor);
-                    ctx.globalAlpha = 0.35;
-
-                    ctx.beginPath();
-                    for (let i = 0; i < 6; i++) {
-                        let angle = (i * Math.PI) / 3;
-                        let hx = Math.cos(angle) * (p.size * 2);
-                        let hy = Math.sin(angle) * (p.size * 2);
-                        if (i === 0) ctx.moveTo(hx, hy);
-                        else ctx.lineTo(hx, hy);
-                    }
-                    ctx.closePath();
-                    ctx.stroke();
-                    ctx.restore();
-                });
-
-            } else if (physicsMode === 'pulse') {
-                // Neon Pulse Wave: Expanding rings from mouse position
-                ctx.strokeStyle = primaryColor;
-                ctx.lineWidth = 1.5;
-                if (!window.pulseRings) window.pulseRings = [];
-
-                if (mouseX > 0 && Math.random() < 0.25) {
-                    window.pulseRings.push({ x: mouseX, y: mouseY, radius: 5, alpha: 0.8 });
-                }
-
-                for (let i = window.pulseRings.length - 1; i >= 0; i--) {
-                    let ring = window.pulseRings[i];
-                    ring.radius += 3;
-                    ring.alpha -= 0.015;
-
-                    if (ring.alpha <= 0) {
-                        window.pulseRings.splice(i, 1);
-                        continue;
-                    }
-
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
-                    ctx.strokeStyle = primaryColor;
-                    ctx.globalAlpha = ring.alpha;
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            }
-
-            requestAnimationFrame(animateCanvas);
-        }
-
-        // Clock & Status
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // View Management
-        function switchView(viewName) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`view-${viewName}`).classList.add('active');
-        }
-
-        // Filter Grid function for Games and Apps
-        function filterGrid(input, gridId) {
-            let filter = input.value.toLowerCase();
-            let grid = document.getElementById(gridId);
-            let cards = grid.getElementsByClassName('grid-card');
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].getElementsByTagName('h3')[0];
-                if (title) {
-                    let text = title.textContent || title.innerText;
-                    cards[i].style.display = text.toLowerCase().indexOf(filter) > -1 ? "" : "none";
-                }
-            }
-        }
-
-        // Browser Search Function
-        function handleBrowserSearch(e) {
-            if (e.key === 'Enter') {
-                let query = e.target.value.trim();
-                if (query) {
-                    let url = query.startsWith('http://') || query.startsWith('https://') ? query : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-                    window.open(url, '_blank');
-                }
-            }
-        }
-
-        // Settings Modal Controls
-        function openSettingsModal() {
-            // Sync staged variables with current active state
-            stagedTheme = currentTheme;
-            stagedSpacing = gridSpacing;
-            stagedPhysics = physicsMode;
-            stagedGravity = gravityEnabled;
-            stagedFloat = floatEnabled;
-
-            updateModalUI();
-            document.getElementById('settings-modal').classList.add('active');
-        }
-
-        function toggleModal(show) {
-            const modal = document.getElementById('settings-modal');
-            if (show) modal.classList.add('active');
-            else modal.classList.remove('active');
-        }
-
-        function stageTheme(themeKey, btn) {
-            stagedTheme = themeKey;
-            document.querySelectorAll('#modal-char-grid .char-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function stageSpacing(val) {
-            stagedSpacing = parseInt(val);
-            document.getElementById('grid-val').innerText = `${val}px`;
-            document.getElementById('modal-slider').value = val;
-        }
-
-        function stagePhysics(modeKey, btn) {
-            stagedPhysics = modeKey;
-            document.querySelectorAll('#modal-physics-grid .physics-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
-
-        function stageToggle(toggleType) {
-            if (toggleType === 'gravity') {
-                stagedGravity = !stagedGravity;
-                let btn = document.getElementById('modal-toggle-gravity');
-                btn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-                if (stagedGravity) btn.classList.add('active');
-                else btn.classList.remove('active');
-            } else if (toggleType === 'float') {
-                stagedFloat = !stagedFloat;
-                let btn = document.getElementById('modal-toggle-float');
-                btn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-                if (stagedFloat) btn.classList.add('active');
-                else btn.classList.remove('active');
-            }
-        }
-
-        function updateModalUI() {
-            // Highlight active character button
-            const charBtns = document.querySelectorAll('#modal-char-grid .char-btn');
-            charBtns.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick').includes(stagedTheme)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Set slider value
-            stageSpacing(stagedSpacing);
-
-            // Highlight active physics button
-            const physBtns = document.querySelectorAll('#modal-physics-grid .physics-btn');
-            physBtns.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.getAttribute('onclick').includes(stagedPhysics)) {
-                    btn.classList.add('active');
-                }
-            });
-
-            // Set toggle buttons state
-            let gravBtn = document.getElementById('modal-toggle-gravity');
-            gravBtn.innerText = `Grid Warp: ${stagedGravity ? 'ON' : 'OFF'}`;
-            if (stagedGravity) gravBtn.classList.add('active'); else gravBtn.classList.remove('active');
-
-            let floatBtn = document.getElementById('modal-toggle-float');
-            floatBtn.innerText = `Avatar Float: ${stagedFloat ? 'ON' : 'OFF'}`;
-            if (stagedFloat) floatBtn.classList.add('active'); else floatBtn.classList.remove('active');
-        }
-
-        function applyChanges() {
-            currentTheme = stagedTheme;
-            gridSpacing = stagedSpacing;
-            physicsMode = stagedPhysics;
-            gravityEnabled = stagedGravity;
-            floatEnabled = stagedFloat;
-
-            applyThemeToDOM(currentTheme);
-            toggleModal(false);
-        }
-
-        function resetAllSettings() {
-            stagedTheme = 'subaru';
-            stagedSpacing = 45;
-            stagedPhysics = 'warp';
-            stagedGravity = true;
-            stagedFloat = true;
-            updateModalUI();
-        }
-
-        function applyThemeToDOM(themeKey) {
-            const data = characters[themeKey];
-            const root = document.documentElement;
-
-            root.style.setProperty('--primary', data.primary);
-            root.style.setProperty('--secondary', data.secondary);
-            root.style.setProperty('--bg-glow', data.glow);
-            root.style.setProperty('--card-bg', data.cardBg);
-            root.style.setProperty('--border-color', data.border);
-            root.style.setProperty('--text-color', data.textColor);
-            document.body.style.backgroundColor = data.bg;
-
-            document.getElementById('title-part1').innerText = data.namePart1;
-            document.getElementById('title-part2').innerText = data.namePart2;
-            document.getElementById('active-subtitle').innerText = data.subtitle;
-
-            const avatarImg = document.getElementById('active-avatar');
-            avatarImg.src = data.avatar;
-
-            // Avatar Float Animation Toggle
-            const avatarContainer = document.querySelector('.avatar-container');
-            if (floatEnabled) {
-                avatarContainer.style.animation = 'floatAnim 4s ease-in-out infinite';
-            } else {
-                avatarContainer.style.animation = 'none';
-            }
-        }
-
-        function openAboutBlank() {
-            let win = window.open();
-            win.document.write(document.documentElement.outerHTML);
-            win.document.close();
-        }
-
-        // Initialize default theme on load
-        window.onload = () => {
-            applyThemeToDOM(currentTheme);
-            resizeCanvas();
-            animateCanvas();
-        };
-    </script>
 </body>
 </html>
